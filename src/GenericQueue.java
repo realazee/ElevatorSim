@@ -5,10 +5,11 @@ import java.util.NoSuchElementException;
 import java.lang.IllegalStateException;
 
 public class GenericQueue<E> {
-	private static final int MAX_QUEUE_SIZE = 20;
+	private static int MAX_QUEUE_SIZE;
 	private LinkedList<E> queue = new LinkedList<>();
 
-	public GenericQueue() {		
+	public GenericQueue(int queueSize) {
+		MAX_QUEUE_SIZE = queueSize;
 	}
 
 	/*
@@ -63,6 +64,9 @@ public class GenericQueue<E> {
 		return queue.peek();
 	}
 	
+	public ListIterator<E> getListIterator() {
+		return queue.listIterator(0);
+	}
 	
 	
 	
