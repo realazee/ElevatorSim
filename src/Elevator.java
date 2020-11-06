@@ -63,6 +63,131 @@ public class Elevator {
 		LOGGER.setLevel(Level.OFF);
 	}
 
+	public int getCapacity() {
+		return capacity;
+	}
+
+	
+
+	public int getTicksPerFloor() {
+		return ticksPerFloor;
+	}
+
+	
+
+	public int getTicksDoorOpenClose() {
+		return ticksDoorOpenClose;
+	}
+
+	
+
+	public int getPassPerTick() {
+		return passPerTick;
+	}
+
+
+
+	public int getCurrState() {
+		return currState;
+	}
+
+	public void setCurrState(int currState) {
+		this.currState = currState;
+	}
+
+	public int getPrevState() {
+		return prevState;
+	}
+
+	public void setPrevState(int prevState) {
+		this.prevState = prevState;
+	}
+
+	public int getPrevFloor() {
+		return prevFloor;
+	}
+
+	public void setPrevFloor(int prevFloor) {
+		this.prevFloor = prevFloor;
+	}
+
+	public int getCurrFloor() {
+		return currFloor;
+	}
+
+	public void setCurrFloor(int currFloor) {
+		this.currFloor = currFloor;
+	}
+
+	public int getDirection() {
+		return direction;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
+	public int getTimeInState() {
+		return timeInState;
+	}
+
+	public void setTimeInState(int timeInState) {
+		this.timeInState = timeInState;
+	}
+
+	public int getDoorState() {
+		return doorState;
+	}
+
+	public void setDoorState(int doorState) {
+		this.doorState = doorState;
+	}
+
+	public int getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(int passengers) {
+		this.passengers = passengers;
+	}
+
+	public int getMoveToFloor() {
+		return moveToFloor;
+	}
+
+	public void setMoveToFloor(int moveToFloor) {
+		this.moveToFloor = moveToFloor;
+	}
+
+	public int getMoveToFloorDir() {
+		return moveToFloorDir;
+	}
+
+	public void setMoveToFloorDir(int moveToFloorDir) {
+		this.moveToFloorDir = moveToFloorDir;
+	}
+	
+	//helpers
+	
+	public void moveElevator() {
+		
+	}
+	public void closeDoor() {
+		this.setDoorState(CLOSEDR);
+	}
+	
+	public void openDoor() {
+		this.setDoorState(OPENDR);
+	}
+	public boolean isDoorClosed(){
+		return false;
+	}
+	public boolean isDoorOpen() {
+		return false;
+	}
+	
+	
+
 	public void enableLogging() {
 		LOGGER.setLevel(Level.INFO);
 	}
