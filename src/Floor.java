@@ -15,7 +15,7 @@ public class Floor {
 	private final static Logger LOGGER = Logger.getLogger(Floor.class.getName());
 	
 	/** The num floors. MUST be initialized in the constructor */
-	private final int NUM_FLOORS;
+	//private final int NUM_FLOORS;
 	
 	// add queues to track the up requests and down requests...
 	
@@ -25,7 +25,7 @@ public class Floor {
 	 * @param qSize the q size
 	 */
 	public Floor(int qSize) {
-		NUM_FLOORS = qSize;
+		//NUM_FLOORS = qSize;
 		LOGGER.setLevel(Level.OFF);
 		// add additional initialization here
 	}

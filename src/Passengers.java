@@ -18,4 +18,28 @@ public class Passengers {
 	private int boardTime;
 	private int timeArrived;
 	
+	
+	public Passengers(int time, int number, int fromFloor, int toFloor, boolean polite, int giveUpTime) {
+		this.time = time;
+		this.number = number;
+		this.fromFloor = fromFloor;
+		this.toFloor = toFloor;
+		this.giveUpTime = giveUpTime;
+		this.polite = polite;
+	}
+	
+	public int getBoardTime() {
+		return boardTime;
+	}
+	public void setBoardTime(int boardTime) {
+		this.boardTime = boardTime;
+	}
+	public int getTimeArrived() {
+		return timeArrived;
+	}
+	public void setTimeArrived(int timeArrived) {
+		this.timeArrived = timeArrived;
+	}
+	
+	
 }

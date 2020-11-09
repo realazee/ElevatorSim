@@ -169,7 +169,9 @@ public class Elevator {
 	
 	//helpers
 	
-	public void moveElevator() {
+	public void moveElevator(int direction) {
+		setCurrState(MV1FLR);
+		setDirection(direction);
 		
 	}
 	public void closeDoor() {
@@ -179,11 +181,23 @@ public class Elevator {
 	public void openDoor() {
 		this.setDoorState(OPENDR);
 	}
+	
+	
 	public boolean isDoorClosed(){
-		return false;
+		if(prevState == CLOSEDR) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	public boolean isDoorOpen() {
-		return false;
+		if(prevState == OPENDR) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	
