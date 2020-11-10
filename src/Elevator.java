@@ -191,7 +191,8 @@ public class Elevator {
 		
 	}
 	public void closeDoor() {
-		this.setDoorState(CLOSEDR);
+		updateCurrState(CLOSEDR);
+		doorState--;
 	}
 	
 	public void openDoor() {
@@ -202,15 +203,16 @@ public class Elevator {
 	
 	
 	public boolean isDoorClosed(){
-		if(prevState == CLOSEDR) {
+		if(doorState == 0) {
 			return true;
 		}
 		else {
 			return false;
 		}
+		
 	}
 	public boolean isDoorOpen() {
-		if(prevState == OPENDR) {
+		if(doorState == 2) {
 			return true;
 		}
 		else {
