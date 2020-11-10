@@ -18,6 +18,8 @@ public class Floor {
 	//private final int NUM_FLOORS;
 	
 	// add queues to track the up requests and down requests...
+	private GenericQueue upQueue;
+	private GenericQueue downQueue;
 	
 	/**
 	 * Instantiates a new floor.
@@ -25,11 +27,30 @@ public class Floor {
 	 * @param qSize the q size
 	 */
 	public Floor(int qSize) {
+		upQueue = new GenericQueue(qSize);
+		downQueue = new GenericQueue(qSize);
+		
 		//NUM_FLOORS = qSize;
 		LOGGER.setLevel(Level.OFF);
 		// add additional initialization here
 	}
 	
+	public GenericQueue getUpQueue() {
+		return upQueue;
+	}
+
+	public void setUpQueue(GenericQueue upQueue) {
+		this.upQueue = upQueue;
+	}
+
+	public GenericQueue getDownQueue() {
+		return downQueue;
+	}
+
+	public void setDownQueue(GenericQueue downQueue) {
+		this.downQueue = downQueue;
+	}
+
 	/**
 	 * Enable logging.
 	 */
