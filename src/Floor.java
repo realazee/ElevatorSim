@@ -66,5 +66,26 @@ public class Floor {
 	public void setLoggerFH(FileHandler fh) {
 		LOGGER.addHandler(fh);
 	}
-
+	
+	
+	
+	
+	//update addUpQueue, addDownQueue, remove, get, anything that edits data within queue
+	//wrapper methods
+	
+	public void addUpQueue(Object o) {
+		upQueue.add(o);
+	}
+	
+	public void addDownQueue(Object o) {
+		downQueue.add(o);
+	}
+	
+	public Object removeUpQueue(Object o) {
+		return upQueue.remove();
+	}
+	
+	public Object removeDownQueue() {
+		return downQueue.remove();
+	}
 }
