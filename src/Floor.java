@@ -88,4 +88,24 @@ public class Floor {
 	public Object removeDownQueue() {
 		return downQueue.remove();
 	}
+	
+	//isUpQueueEmpty,  isDownQueueEmpty, peakUpQueue, peakDownQueue
+	
+	public boolean isUpQueueEmpty() {
+		return upQueue.isEmpty();
+	}
+	
+	public boolean isDownQueueEmpty() {
+		return downQueue.isEmpty();
+	}
+	
+	public Object peekUpQueue() {
+		return upQueue.peek();
+	}
+	
+	public Object peekDownQueue() {
+		return downQueue.peek();
+	}
+	
+	
 }
