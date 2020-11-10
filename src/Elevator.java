@@ -210,4 +210,20 @@ public class Elevator {
 		LOGGER.addHandler(fh);
 	}
 
+	public boolean isElevatorFull() {
+		return(this.getCapacity() == this.getPassengers()); 
+	}
+	
+	public boolean isCallsFromAbove() {
+		return(this.getMoveToFloor() > this.getCurrFloor());
+	}
+	
+	public boolean isCallsFromBelow() {
+		return(this.getMoveToFloor() < this.getCurrFloor());
+	}
+	
+	
+	
+	
+	
 }
