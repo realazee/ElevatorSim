@@ -59,6 +59,7 @@ public class Elevator {
 	public Elevator(int numFloors) {		
 		this.prevState = UNDEF;
 		this.currState = STOP;
+		this.currFloor = 0;
 		
 		LOGGER.setLevel(Level.OFF);
 	}
@@ -169,9 +170,24 @@ public class Elevator {
 	
 	//helpers
 	
-	public void moveElevator(int direction) {
-		setCurrState(MV1FLR);
-		setDirection(direction);
+	
+	public void updateCurrState(int newCurrState) {
+		prevState = currState;
+		if(currState == newCurrState) {
+			timeInState++;
+		}
+		else if(!(currState == newCurrState)) {
+			currState = newCurrState;
+			timeInState = 0;
+		}
+		
+	}
+	
+	public void moveElevator() {
+		timeInState++;
+		if(timeInState % ticksPerFloor == 0) {
+			currFloor += direction;
+		}
 		
 	}
 	public void closeDoor() {
@@ -179,7 +195,9 @@ public class Elevator {
 	}
 	
 	public void openDoor() {
-		this.setDoorState(OPENDR);
+		updateCurrState(OPENDR);
+		doorState++;
+		
 	}
 	
 	

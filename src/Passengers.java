@@ -26,6 +26,8 @@ public class Passengers {
 		this.toFloor = toFloor;
 		this.giveUpTime = giveUpTime;
 		this.polite = polite;
+		id = ID;
+		ID++;
 	}
 	
 	public int getBoardTime() {
