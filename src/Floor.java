@@ -81,7 +81,7 @@ public class Floor {
 		downQueue.add(o);
 	}
 	
-	public Object removeUpQueue(Object o) {
+	public Object removeUpQueue() {
 		return upQueue.remove();
 	}
 	
