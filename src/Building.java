@@ -21,6 +21,7 @@ public class Building {
 	private final int NUM_ELEVATORS;
 	public Floor[] floors;
 	private Elevator lift;
+	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
 
 	public Building(int numFloors) {
 		NUM_FLOORS = numFloors;

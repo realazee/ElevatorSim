@@ -7,10 +7,11 @@ public class ElevatorSimController {
 	private Building building;
 	private int stepCnt = 0;
 	private boolean endSim = false;
+	
 		
 	public ElevatorSimController(ElevatorSimulation gui) {
 		this.gui = gui;
-		building = new Building(6, 1);
+		building = new Building(6);
 		InitializePassengerData("ElevatorTest.csv");
 
 	}
@@ -20,6 +21,9 @@ public class ElevatorSimController {
 			String line;
 			while ((line = br.readLine())!= null) {
 				String[] values = line.split(",");
+				
+				building.passQ.add(new Passengers(Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]), Boolean.parseBoolean(values[4]), Integer.parseInt(values[5])));
+				//System.out.println(building.passQ.toString());
 				// use values to construct the passenger...
 			}
 		} catch (IOException e) { 
@@ -38,5 +42,10 @@ public class ElevatorSimController {
 		// then updateElevator...
 		// and update the GUI...
 	}
+ 
+ 	
+ 	
+ 	
+ 	
 
 }

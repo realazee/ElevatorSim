@@ -48,6 +48,7 @@ public class ElevatorSimulation extends Application {
 	}
 	
 	public static void main (String[] args) {
+		
 		Application.launch(args);
 	}
 
