@@ -23,9 +23,9 @@ public class Building {
 	private Elevator lift;
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
 
-	public Building(int numFloors) {
+	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
 		NUM_FLOORS = numFloors;
-		NUM_ELEVATORS = 1;
+		NUM_ELEVATORS = numElevators;
 
 		System.setProperty("java.util.logging.SimpleFormatter.format","%4$-7s %5$s%n");
 		LOGGER.setLevel(Level.OFF);
@@ -44,7 +44,7 @@ public class Building {
 			floors[i]= new Floor(10); 
 		}
 		floors[0].setLoggerFH(fh); // only need to pass the file to one of the floors.
-		lift = new Elevator(NUM_FLOORS);
+		lift = new Elevator(capacity, ticksPerFloor, ticksDoorOpenClose, passPerTick);
 		lift.setLoggerFH(fh);
 	}
 	

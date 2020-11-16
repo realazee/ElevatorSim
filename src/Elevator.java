@@ -29,10 +29,17 @@ public class Elevator {
 	private final static int MV1FLR = 6;
 
 	// Configuration parameters
+	/*
 	private int capacity = 15;
 	private int ticksPerFloor = 5;
 	private int ticksDoorOpenClose = 2;  
 	private int passPerTick = 3;
+	*/
+	private int capacity;
+	private int ticksPerFloor;
+	private int ticksDoorOpenClose;  
+	private int passPerTick;
+	
 	
 	//State Variables
 	// track the elevator state
@@ -56,10 +63,14 @@ public class Elevator {
 	private int moveToFloorDir;
 
 	
-	public Elevator(int numFloors) {		
+	public Elevator(int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {		
 		this.prevState = UNDEF;
 		this.currState = STOP;
 		this.currFloor = 0;
+		this.capacity = capacity;
+		this.ticksPerFloor = ticksPerFloor;
+		this.ticksDoorOpenClose = ticksDoorOpenClose;
+		this.passPerTick = passPerTick;
 		
 		LOGGER.setLevel(Level.OFF);
 	}
