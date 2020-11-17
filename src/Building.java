@@ -66,20 +66,48 @@ public class Building {
 						+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
 	    */
 	}
+	//add is add to end of queue
+	//remove removes the first in the queue, and returns it
+	//peek returns the first in the queue but doesnt remove it.
+	public void checkPassengerQueue(int globalTime) {
+		if(passQ.peek().getTime() == globalTime) {
+			int targetFloor = passQ.peek().getFromFloor();
+			if(passQ.peek().isGoingUp()) {
+				floors[targetFloor].addUpQueue(passQ.remove());
+			}
+			else if(passQ.peek().isGoingDown()) {
+				floors[targetFloor].addDownQueue(passQ.remove());
+			}
+		}
+	}
 	
 	public int currStateStop(int time, Elevator lift) {
-		
-		return 0;
+		if(!lift.isCallsOnCurrFloor()) {
+			return MVTOFLR;
+		}
+		else if(lift.isCallsOnCurrFloor()) {
+			return OPENDR;
+		}
+		else {
+			return STOP;
+		}
 	}
 	
 	
 	public int currStateMvToFlr(int time, Elevator lift) {
-		return 0;
+		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
+			return OPENDR;
+		}
+		else {
+			return MVTOFLR;
+		}
 	}
 	
 	
 	public int currStateOpenDr(int time, Elevator lift) {
-		return 0;
+		if(!lift.isDoorOpen()) {
+			return 2;
+		}
 	}
 	
 	

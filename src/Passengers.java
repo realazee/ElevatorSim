@@ -30,6 +30,70 @@ public class Passengers {
 		ID++;
 	}
 	
+	public static int getID() {
+		return ID;
+	}
+
+	public static void setID(int iD) {
+		ID = iD;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getFromFloor() {
+		return fromFloor;
+	}
+
+	public void setFromFloor(int fromFloor) {
+		this.fromFloor = fromFloor;
+	}
+
+	public int getToFloor() {
+		return toFloor;
+	}
+
+	public void setToFloor(int toFloor) {
+		this.toFloor = toFloor;
+	}
+
+	public boolean isPolite() {
+		return polite;
+	}
+
+	public void setPolite(boolean polite) {
+		this.polite = polite;
+	}
+
+	public int getGiveUpTime() {
+		return giveUpTime;
+	}
+
+	public void setGiveUpTime(int giveUpTime) {
+		this.giveUpTime = giveUpTime;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public int getBoardTime() {
 		return boardTime;
 	}
@@ -42,6 +106,31 @@ public class Passengers {
 	public void setTimeArrived(int timeArrived) {
 		this.timeArrived = timeArrived;
 	}
+	public int getDirection() {
+		if(toFloor > fromFloor) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	public boolean isGoingUp() {
+		if(toFloor > fromFloor) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean isGoingDown() {
+		if(toFloor < fromFloor) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	
 	
 }

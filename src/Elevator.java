@@ -252,6 +252,9 @@ public class Elevator {
 	public boolean isCallsFromBelow() {
 		return(this.getMoveToFloor() < this.getCurrFloor());
 	}
+	public boolean isCallsOnCurrFloor(){
+		return(this.getMoveToFloor()== this.getCurrFloor());
+	}
 	
 	
 	
