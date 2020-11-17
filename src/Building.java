@@ -69,6 +69,27 @@ public class Building {
 	//add is add to end of queue
 	//remove removes the first in the queue, and returns it
 	//peek returns the first in the queue but doesnt remove it.
+	private Passengers prioritizeCalls() {
+		if(lift.isCallsOnCurrFloor()) {
+			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && !floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
+				if(floors[lift.getCurrFloor()].getUpQueue().getSize() >= floors[lift.getCurrFloor()].getDownQueue().getSize()) {
+					lift.setDirection(1);
+				} else {
+					lift.setDirection(-1);
+				}
+			}
+			
+			else if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty()) {
+				
+			}
+			
+			else if(!floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
+				
+			}
+			
+		}
+	}
+	
 	public void checkPassengerQueue(int globalTime) {
 		if(passQ.peek().getTime() == globalTime) {
 			int targetFloor = passQ.peek().getFromFloor();
@@ -82,18 +103,34 @@ public class Building {
 	}
 	
 	public int currStateStop(int time, Elevator lift) {
-		if(!lift.isCallsOnCurrFloor()) {
-			return MVTOFLR;
-		}
-		else if(lift.isCallsOnCurrFloor()) {
-			return OPENDR;
-		}
-		else {
+
+		if(lift.getOnBoard().size() == 0 && lift.isDoorClosed() && noOneWaiting()) {
 			return STOP;
 		}
+		
+		
+//		if(!lift.isCallsOnCurrFloor()) {
+//			return MVTOFLR;
+//		}
+//		else if(lift.isCallsOnCurrFloor()) {
+//			return OPENDR;
+//		}
+//		else {
+//			return STOP;
+//		}
 	}
 	
-	
+	public boolean noOneWaiting() {
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].getUpQueue().isEmpty()) {
+				return false;
+			}
+			if(!floors[i].getDownQueue().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
 	public int currStateMvToFlr(int time, Elevator lift) {
 		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
 			return OPENDR;

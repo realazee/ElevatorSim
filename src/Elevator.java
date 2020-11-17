@@ -39,7 +39,7 @@ public class Elevator {
 	private int ticksPerFloor;
 	private int ticksDoorOpenClose;  
 	private int passPerTick;
-	
+	private ArrayList<Passengers> onBoard = new ArrayList<Passengers>(); 
 	
 	//State Variables
 	// track the elevator state
@@ -75,6 +75,18 @@ public class Elevator {
 		LOGGER.setLevel(Level.OFF);
 	}
 
+	public void setOnBoard(ArrayList<Passengers> arr) {
+		this.onBoard = arr;
+	}
+
+	
+
+	public ArrayList<Passengers> getOnBoard() {
+		return onBoard;
+	}
+	
+	
+	
 	public int getCapacity() {
 		return capacity;
 	}
