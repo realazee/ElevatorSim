@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -35,13 +36,29 @@ public class ElevatorSimulation extends Application {
 	private final static int CLOSEDR = 5;
 	private final static int MV1FLR = 6;
 
+	
+	
 	public ElevatorSimulation() {
 		controller = new ElevatorSimController(this);	
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
+		BorderPane bp = new BorderPane();
+		HBox buttons = new HBox();
+		buttons.setPrefHeight(50);
+		bp.setBottom(buttons);
+		TextField input = new TextField();
+		Button stepSim = new Button("Step Sim");
+		Button step = new Button("Step: ");		
+		Button run = new Button("Run");
+		RadioButton log = new RadioButton("Logging");
+		
+		buttons.getChildren().addAll(stepSim, step, input, run, log);
 
+		Scene main = new Scene(bp, 500, 500);
+		primaryStage.setScene(main);
 		primaryStage.setTitle("Elevator Simulation");
 		primaryStage.show();
 

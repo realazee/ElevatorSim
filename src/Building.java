@@ -67,6 +67,44 @@ public class Building {
 	    */
 	}
 	
+	public int currStateStop(int time, Elevator lift) {
+		
+		return 0;
+	}
+	
+	
+	public int currStateMvToFlr(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
+	public int currStateOpenDr(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
+	
+	public int currStateOffLd(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
+	public int currStateBoard(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
+	public int currStateCloseDr(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
+	
+	public int currStateMv1Flr(int time, Elevator lift) {
+		return 0;
+	}
+	
+	
 	public void enableLogging() {
 		// need to pass this along to both the elevator and floor classes...
 		LOGGER.setLevel(Level.INFO);
