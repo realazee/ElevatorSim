@@ -223,7 +223,7 @@ public class Elevator {
 		
 	}
 	public boolean isDoorOpen() {
-		if(doorState == 2) {
+		if(doorState == ticksDoorOpenClose) {
 			return true;
 		}
 		else {
