@@ -22,7 +22,7 @@ public class Building {
 	public Floor[] floors;
 	private Elevator lift;
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
-
+	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
 		NUM_FLOORS = numFloors;
 		NUM_ELEVATORS = numElevators;
@@ -73,9 +73,9 @@ public class Building {
 		if(lift.isCallsOnCurrFloor()) {
 			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && !floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
 				if(floors[lift.getCurrFloor()].getUpQueue().getSize() >= floors[lift.getCurrFloor()].getDownQueue().getSize()) {
-					lift.setDirection(1);
+					return floors[lift.getCurrFloor()].peekUpQueue(); 
 				} else {
-					lift.setDirection(-1);
+					return floors[lift.getCurrFloor()].peekDownQueue(); 
 				}
 			}
 			

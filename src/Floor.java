@@ -18,8 +18,8 @@ public class Floor {
 	//private final int NUM_FLOORS;
 	
 	// add queues to track the up requests and down requests...
-	private GenericQueue upQueue;
-	private GenericQueue downQueue;
+	private GenericQueue<Passengers> upQueue;
+	private GenericQueue<Passengers> downQueue;
 	
 	/**
 	 * Instantiates a new floor.
@@ -73,19 +73,19 @@ public class Floor {
 	//update addUpQueue, addDownQueue, remove, get, anything that edits data within queue
 	//wrapper methods
 	
-	public void addUpQueue(Object o) {
-		upQueue.add(o);
+	public void addUpQueue(Passengers p) {
+		upQueue.add(p);
 	}
 	
-	public void addDownQueue(Object o) {
-		downQueue.add(o);
+	public void addDownQueue(Passengers p) {
+		downQueue.add(p);
 	}
 	
-	public Object removeUpQueue() {
+	public  Passengers removeUpQueue() {
 		return upQueue.remove();
 	}
 	
-	public Object removeDownQueue() {
+	public Passengers removeDownQueue() {
 		return downQueue.remove();
 	}
 	
@@ -99,11 +99,11 @@ public class Floor {
 		return downQueue.isEmpty();
 	}
 	
-	public Object peekUpQueue() {
+	public Passengers peekUpQueue() {
 		return upQueue.peek();
 	}
 	
-	public Object peekDownQueue() {
+	public Passengers peekDownQueue() {
 		return downQueue.peek();
 	}
 	
