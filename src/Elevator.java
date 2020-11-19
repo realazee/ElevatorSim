@@ -88,7 +88,9 @@ public class Elevator {
 	}
 	
 	public void board() {
-		
+		//checking every tick
+		//whether new ppl have arrived
+		//also its going to 
 	}
 	
 	public ArrayList<Passengers> getOnBoard() {
