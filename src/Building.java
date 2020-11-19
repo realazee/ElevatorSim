@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,7 @@ public class Building {
 	public Floor[] floors;
 	private Elevator lift;
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
+	public ArrayList<Passengers>[] onBoard = new ArrayList<Passengers>[floors.length]();
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
 		NUM_FLOORS = numFloors;
@@ -165,20 +167,34 @@ public class Building {
 	//return the next states.
 	public int currStateStop(int time, Elevator lift) {
 
-		if(lift.getOnBoard().size() == 0 && lift.isDoorClosed() && noOneWaiting()) {
+		if(noOneWaiting()) {
 			return STOP;
 		}
-
-
-		//		if(!lift.isCallsOnCurrFloor()) {
-		//			return MVTOFLR;
-		//		}
-		//		else if(lift.isCallsOnCurrFloor()) {
-		//			return OPENDR;
-		//		}
-		//		else {
-		//			return STOP;
-		//		}
+		else if (isUpCallFromCurrFloor() || isDownCallFromCurrFloor()) {
+			setNextDropOffFloor();
+			setNextElevatorDirection();
+			return OPENDR;
+		} 
+		setNextPickUpFloor();
+		setNextElevatorDirection();
+		return MVTOFLR;	
+	}
+	
+	//isUpCallFromCurrFloor()
+	
+	private boolean isUpCallFromCurrFloor() {
+		if(floors[lift.getCurrFloor()].isUpQueueEmpty()) {
+			return false;
+		}
+		return true;
+	}
+	
+	//isDownCallFromCurrFloor
+	private boolean isDownCallFromCurrFloor() {
+		if(floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 	public boolean noOneWaiting() {
@@ -192,19 +208,52 @@ public class Building {
 		}
 		return true;
 	}
+	
+	//passengers have been picked up, sets elevator MVTOFLR to passengers target floor.
+	private void setNextDropOffFloor() {
+		lift.setMoveToFloor(prioritizeCalls().getToFloor());
+	}
+	
+	//passengers have not been picked up, sets elevator MVTOFLR to floor of prioritizeCalls().
+	private void setNextPickUpFloor() {
+		lift.setMoveToFloor(prioritizeCalls().getFromFloor());
+	}
+	
+	private void setNextElevatorDirection() {
+		
+		if(lift.getMoveToFloor() > lift.getCurrFloor()) {
+			lift.setMoveToFloorDir(1);
+		} else if(lift.getMoveToFloor() > lift.getCurrFloor()) {
+			lift.setMoveToFloorDir(-1);
+		}
+	}
+	
 	public int currStateMvToFlr(int time, Elevator lift) {
+		//state actions
+		lift.moveElevator();
 		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
+			setNextDropOffFloor();
+			setNextElevatorDirection();
 			return OPENDR;
 		}
-		else {
-			return MVTOFLR;
-		}
+		return MVTOFLR;
+		
+		//		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
+//			return OPENDR;
+//		}
+//		else {
+//			return MVTOFLR;
+//		}
 	}
 
 
 	public int currStateOpenDr(int time, Elevator lift) {
+		lift.openDoor();
 		if(!lift.isDoorOpen()) {
-			return 2;
+			return OPENDR;
+		}
+		else if() {
+			
 		}
 	}
 
