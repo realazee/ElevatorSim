@@ -3,11 +3,12 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.lang.Math.*;
 
 public class Building {
 	private final static Logger LOGGER = Logger.getLogger(Building.class.getName());
 	private FileHandler fh;
-	
+
 	// Elevator State Variables
 	private final static int STOP = 0;
 	private final static int MVTOFLR = 1;
@@ -37,7 +38,7 @@ public class Building {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// create the floors
 		floors = new Floor[NUM_FLOORS];
 		for (int i = 0; i < NUM_FLOORS; i++) {
@@ -47,28 +48,29 @@ public class Building {
 		lift = new Elevator(capacity, ticksPerFloor, ticksDoorOpenClose, passPerTick);
 		lift.setLoggerFH(fh);
 	}
-	
-	
+
+
 	public void updateElevator(int time) {
 		switch (lift.getCurrState()) {
-			case STOP: lift.updateCurrState(currStateStop(time,lift)); break;
-			case MVTOFLR: lift.updateCurrState(currStateMvToFlr(time,lift)); break;
-			case OPENDR: lift.updateCurrState(currStateOpenDr(time,lift)); break;
-			case OFFLD: lift.updateCurrState(currStateOffLd(time,lift)); break;
-			case BOARD: lift.updateCurrState(currStateBoard(time,lift)); break;
-			case CLOSEDR: lift.updateCurrState(currStateCloseDr(time,lift)); break;
-			case MV1FLR: lift.updateCurrState(currStateMv1Flr(time,lift)); break;
+		case STOP: lift.updateCurrState(currStateStop(time,lift)); break;
+		case MVTOFLR: lift.updateCurrState(currStateMvToFlr(time,lift)); break;
+		case OPENDR: lift.updateCurrState(currStateOpenDr(time,lift)); break;
+		case OFFLD: lift.updateCurrState(currStateOffLd(time,lift)); break;
+		case BOARD: lift.updateCurrState(currStateBoard(time,lift)); break;
+		case CLOSEDR: lift.updateCurrState(currStateCloseDr(time,lift)); break;
+		case MV1FLR: lift.updateCurrState(currStateMv1Flr(time,lift)); break;
 		}
-		
+
 		/* example logger...
 		if (elevatorStateChanged(lift)) 
 			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
 						+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
-	    */
+		 */
 	}
 	//add is add to end of queue
 	//remove removes the first in the queue, and returns it
 	//peek returns the first in the queue but doesnt remove it.
+	//returns the next passenger to serve
 	private Passengers prioritizeCalls() {
 		if(lift.isCallsOnCurrFloor()) {
 			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && !floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
@@ -77,19 +79,74 @@ public class Building {
 				} else {
 					return floors[lift.getCurrFloor()].peekDownQueue(); 
 				}
+
 			}
-			
-			else if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty()) {
-				
-			}
-			
-			else if(!floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
-				
-			}
-			
 		}
+
+		if(numUpCalls() > numDownCalls()) {
+			return lowestPassengerGoingUp();
+		}
+		if(numUpCalls() < numDownCalls()) {
+			return highestPassengerGoingDown();
+		}
+		if(numUpCalls() == numDownCalls()) {
+			int differenceBetweenCurrentFloorAndLowestUp = Math.abs(lift.getCurrFloor() - lowestPassengerGoingUp().getFromFloor());
+			int differenceBetweenCurrentFloorAndHighestDown = Math.abs(lift.getCurrFloor() - highestPassengerGoingDown().getFromFloor());
+			if(differenceBetweenCurrentFloorAndLowestUp < differenceBetweenCurrentFloorAndHighestDown) {
+				return lowestPassengerGoingUp();
+			}
+			else if(differenceBetweenCurrentFloorAndLowestUp > differenceBetweenCurrentFloorAndHighestDown) {
+				return highestPassengerGoingDown();
+			}
+		}
+
+		return lowestPassengerGoingUp();
+
+
 	}
-	
+
+
+
+	private Passengers lowestPassengerGoingUp() {
+		int lowestFloorSoFar = floors.length;
+		for(int i = floors.length; i > 0; i--) {
+			if(!floors[i].isUpQueueEmpty()) {
+				lowestFloorSoFar = i;
+			}
+		}
+		return floors[lowestFloorSoFar].peekUpQueue();
+
+	}
+	private Passengers highestPassengerGoingDown() {
+		int highestFloorSoFar = 0;
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].isDownQueueEmpty()) {
+				highestFloorSoFar = i;
+			}
+		}
+		return floors[highestFloorSoFar].peekUpQueue();
+	}
+
+
+	private int numUpCalls() {
+		int c = 0;
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].getUpQueue().isEmpty()) {
+				c++;
+			}
+		}
+		return c;
+	}
+	private int numDownCalls() {
+		int c = 0;
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].getDownQueue().isEmpty()) {
+				c++;
+			}
+		}
+		return c;
+	}
+
 	public void checkPassengerQueue(int globalTime) {
 		if(passQ.peek().getTime() == globalTime) {
 			int targetFloor = passQ.peek().getFromFloor();
@@ -101,25 +158,29 @@ public class Building {
 			}
 		}
 	}
+
 	
+	
+	
+	//return the next states.
 	public int currStateStop(int time, Elevator lift) {
 
 		if(lift.getOnBoard().size() == 0 && lift.isDoorClosed() && noOneWaiting()) {
 			return STOP;
 		}
-		
-		
-//		if(!lift.isCallsOnCurrFloor()) {
-//			return MVTOFLR;
-//		}
-//		else if(lift.isCallsOnCurrFloor()) {
-//			return OPENDR;
-//		}
-//		else {
-//			return STOP;
-//		}
+
+
+		//		if(!lift.isCallsOnCurrFloor()) {
+		//			return MVTOFLR;
+		//		}
+		//		else if(lift.isCallsOnCurrFloor()) {
+		//			return OPENDR;
+		//		}
+		//		else {
+		//			return STOP;
+		//		}
 	}
-	
+
 	public boolean noOneWaiting() {
 		for(int i = 0; i < floors.length; i++) {
 			if(!floors[i].getUpQueue().isEmpty()) {
@@ -139,37 +200,37 @@ public class Building {
 			return MVTOFLR;
 		}
 	}
-	
-	
+
+
 	public int currStateOpenDr(int time, Elevator lift) {
 		if(!lift.isDoorOpen()) {
 			return 2;
 		}
 	}
-	
-	
-	
+
+
+
 	public int currStateOffLd(int time, Elevator lift) {
 		return 0;
 	}
-	
-	
+
+
 	public int currStateBoard(int time, Elevator lift) {
 		return 0;
 	}
-	
-	
+
+
 	public int currStateCloseDr(int time, Elevator lift) {
 		return 0;
 	}
-	
-	
-	
+
+
+
 	public int currStateMv1Flr(int time, Elevator lift) {
 		return 0;
 	}
-	
-	
+
+
 	public void enableLogging() {
 		// need to pass this along to both the elevator and floor classes...
 		LOGGER.setLevel(Level.INFO);
