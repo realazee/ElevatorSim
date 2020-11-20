@@ -78,6 +78,8 @@ public class Elevator {
 		this.onBoard = arr;		
 	}
 
+	//deletes all passengers onboard the elevator that need to get off on the
+	//current floor.
 	public void offLoad() {
 		for(int i = 0; i < onBoard.size(); i++) {
 			if(onBoard.get(i).getToFloor() == currFloor) {
@@ -87,11 +89,8 @@ public class Elevator {
 		}
 	}
 	
-	public void board() {
-		//checking every tick
-		//whether new ppl have arrived
-		//also its going to 
-	}
+	
+
 	
 	public ArrayList<Passengers> getOnBoard() {
 		return onBoard;

@@ -24,7 +24,7 @@ public class Building {
 	public Floor[] floors;
 	private Elevator lift;
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
-	public ArrayList<Passengers>[] onBoard = new ArrayList<Passengers>[floors.length]();
+	
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
 		NUM_FLOORS = numFloors;
@@ -161,9 +161,9 @@ public class Building {
 		}
 	}
 
-	
-	
-	
+
+
+
 	//return the next states.
 	public int currStateStop(int time, Elevator lift) {
 
@@ -179,16 +179,16 @@ public class Building {
 		setNextElevatorDirection();
 		return MVTOFLR;	
 	}
-	
+
 	//isUpCallFromCurrFloor()
-	
+
 	private boolean isUpCallFromCurrFloor() {
 		if(floors[lift.getCurrFloor()].isUpQueueEmpty()) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	//isDownCallFromCurrFloor
 	private boolean isDownCallFromCurrFloor() {
 		if(floors[lift.getCurrFloor()].isDownQueueEmpty()) {
@@ -208,26 +208,26 @@ public class Building {
 		}
 		return true;
 	}
-	
+
 	//passengers have been picked up, sets elevator MVTOFLR to passengers target floor.
 	private void setNextDropOffFloor() {
 		lift.setMoveToFloor(prioritizeCalls().getToFloor());
 	}
-	
+
 	//passengers have not been picked up, sets elevator MVTOFLR to floor of prioritizeCalls().
 	private void setNextPickUpFloor() {
 		lift.setMoveToFloor(prioritizeCalls().getFromFloor());
 	}
-	
+
 	private void setNextElevatorDirection() {
-		
+
 		if(lift.getMoveToFloor() > lift.getCurrFloor()) {
 			lift.setMoveToFloorDir(1);
 		} else if(lift.getMoveToFloor() > lift.getCurrFloor()) {
 			lift.setMoveToFloorDir(-1);
 		}
 	}
-	
+
 	public int currStateMvToFlr(int time, Elevator lift) {
 		//state actions
 		lift.moveElevator();
@@ -237,13 +237,13 @@ public class Building {
 			return OPENDR;
 		}
 		return MVTOFLR;
-		
+
 		//		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
-//			return OPENDR;
-//		}
-//		else {
-//			return MVTOFLR;
-//		}
+		//			return OPENDR;
+		//		}
+		//		else {
+		//			return MVTOFLR;
+		//		}
 	}
 
 
@@ -252,11 +252,35 @@ public class Building {
 		if(!lift.isDoorOpen()) {
 			return OPENDR;
 		}
-		else if() {
-			
+		else if(lift.isDoorOpen() &&) {
+
 		}
 	}
+	public boolean passengersGetOffAtCurrFloor() {
+		for(int i = 0; i < lift.getOnBoard().size(); i++) {
+			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//puts everyone in the current floors up or down queue into the elevator
+	//if the direction of the elevator is up or down respectively.
+	public void board() {
+		
+		if(lift.getDirection() == 1) {
+			for(int i = 0; i < floors[lift.getCurrFloor()].getUpQueue().getSize(); i++) {
+				lift.getOnBoard().add(floors[lift.getCurrFloor()].removeUpQueue());
+			}
+		}
+		else if(lift.getDirection() == -1) {
+			for(int i = 0; i < floors[lift.getCurrFloor()].getDownQueue().getSize(); i++) {
+				lift.getOnBoard().add(floors[lift.getCurrFloor()].removeDownQueue());
+			}
+		}
 
+	}
 
 
 	public int currStateOffLd(int time, Elevator lift) {
