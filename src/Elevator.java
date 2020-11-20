@@ -40,7 +40,6 @@ public class Elevator {
 	private int ticksDoorOpenClose;  
 	private int passPerTick;
 	private ArrayList<Passengers> onBoard = new ArrayList<Passengers>(); 
-	
 	//State Variables
 	// track the elevator state
 	private int currState;
@@ -76,11 +75,24 @@ public class Elevator {
 	}
 
 	public void setOnBoard(ArrayList<Passengers> arr) {
-		this.onBoard = arr;
+		this.onBoard = arr;		
 	}
 
+	public void offLoad() {
+		for(int i = 0; i < onBoard.size(); i++) {
+			if(onBoard.get(i).getToFloor() == currFloor) {
+				onBoard.remove(i);
+				i--;
+			}
+		}
+	}
 	
-
+	public void board() {
+		//checking every tick
+		//whether new ppl have arrived
+		//also its going to 
+	}
+	
 	public ArrayList<Passengers> getOnBoard() {
 		return onBoard;
 	}
@@ -219,12 +231,10 @@ public class Elevator {
 		return (timeInState%ticksPerFloor)!=0;
 	}
 	public void closeDoor() {
-		updateCurrState(CLOSEDR);
 		doorState--;
 	}
 	
 	public void openDoor() {
-		updateCurrState(OPENDR);
 		doorState++;
 		
 	}
