@@ -208,10 +208,15 @@ public class Elevator {
 	
 	public void moveElevator() {
 		timeInState++;
-		if(timeInState % ticksPerFloor == 0) {
+		prevFloor = currFloor;
+		if((timeInState % ticksPerFloor) == 0) {
 			currFloor += direction;
 		}
 		
+	}
+	
+	public boolean isMoving() {
+		return (timeInState%ticksPerFloor)!=0;
 	}
 	public void closeDoor() {
 		updateCurrState(CLOSEDR);
