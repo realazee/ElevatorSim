@@ -36,8 +36,8 @@ public class Elevator {
 	private int passPerTick = 3;
 	*/
 	private int capacity;
-	private int ticksPerFloor;
 	private int ticksDoorOpenClose;  
+	private int ticksPerFloor;  
 	private int passPerTick;
 	private ArrayList<Passengers> onBoard = new ArrayList<Passengers>(); 
 	//State Variables
@@ -55,6 +55,7 @@ public class Elevator {
 	// used to track where the the door is in OPENDR and CLOSEDR states 
 	private int doorState;
 	// number of passengers on the elevator
+	//ignore this, use lift.getOnBoard().size()
 	private int passengers;
 	// when exiting the stop state, the floor to moveTo and the direction to go in once you
 	// get there...
@@ -89,9 +90,26 @@ public class Elevator {
 		}
 	}
 	
+	public int numPassengersToOffload() {
+		int counter = 0;
+		for(int i = 0; i < onBoard.size(); i++) {
+			if(onBoard.get(i).getToFloor() == currFloor) {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
+	public int numTicksToOffload() {
+		if((numPassengersToOffload() % passPerTick) == 0) {
+			return (numPassengersToOffload() / passPerTick);
+		} else {
+			return ((numPassengersToOffload() / passPerTick) + 1);
+		}
+	}
+	
 	
 
-	
 	public ArrayList<Passengers> getOnBoard() {
 		return onBoard;
 	}
@@ -268,7 +286,7 @@ public class Elevator {
 	}
 
 	public boolean isElevatorFull() {
-		return(this.getCapacity() == this.getPassengers()); 
+		return(this.getCapacity() == this.getOnBoard().size()); 
 	}
 	
 	public boolean isCallsFromAbove() {
@@ -284,6 +302,9 @@ public class Elevator {
 	
 	
 	
+//	public boolean isCallsInSameDir() {
+//		return (direction == 1 && isCallsFromAbove());	
+//	}
 	
 	
 }

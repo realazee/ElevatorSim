@@ -165,7 +165,7 @@ public class Building {
 
 
 	//return the next states.
-	public int currStateStop(int time, Elevator lift) {
+	public int currStateStop(Elevator lift) {
 
 		if(noOneWaiting()) {
 			return STOP;
@@ -228,7 +228,7 @@ public class Building {
 		}
 	}
 
-	public int currStateMvToFlr(int time, Elevator lift) {
+	public int currStateMvToFlr(Elevator lift) {
 		//state actions
 		lift.moveElevator();
 		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
@@ -247,13 +247,16 @@ public class Building {
 	}
 
 
-	public int currStateOpenDr(int time, Elevator lift) {
+	public int currStateOpenDr(Elevator lift) {
 		lift.openDoor();
 		if(!lift.isDoorOpen()) {
 			return OPENDR;
 		}
-		else if(lift.isDoorOpen() &&) {
-
+		else if(lift.isDoorOpen() && passengersGetOffAtCurrFloor()) {
+			return OFFLD;
+		}
+		else {
+			return BOARD;
 		}
 	}
 	public boolean passengersGetOffAtCurrFloor() {
@@ -284,23 +287,57 @@ public class Building {
 
 
 	public int currStateOffLd(int time, Elevator lift) {
-		return 0;
+		int numTicksToOffload = lift.numTicksToOffload();
+		
+		if(lift.getTimeInState() == 0) {
+			lift.offLoad();
+		}
+		
+		if()
+		
+		if(lift.getTimeInState() < numTicksToOffload) {
+			return OFFLD;
+		}
+		
 	}
-
+//	
+//	private boolean isCallsInSameDir() {
+//		if(prioritizeCalls().getToFloor()) {
+//			
+//		}
+//	}
+//	
+	
+	
+	
 
 	public int currStateBoard(int time, Elevator lift) {
-		return 0;
+		
 	}
 
 
 	public int currStateCloseDr(int time, Elevator lift) {
-		return 0;
+		lift.closeDoor();
+		if(!lift.isDoorClosed()) {
+			return CLOSEDR;
+		}
+		if(lift.getOnBoard().size() == 0 && noOneWaiting()) {
+			return STOP;
+		}
+		return MV1FLR;
 	}
 
 
 
 	public int currStateMv1Flr(int time, Elevator lift) {
-		return 0;
+		int floorBeforeMoving = lift.getCurrFloor();
+		lift.moveElevator();
+		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
+			return MV1FLR;
+		}
+		
+		if(floorBeforeMoving != lift.getCurrFloor() && )
+		
 	}
 
 
