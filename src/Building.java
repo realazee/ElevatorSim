@@ -24,7 +24,7 @@ public class Building {
 	public Floor[] floors;
 	private Elevator lift;
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
-	
+
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
 		NUM_FLOORS = numFloors;
@@ -267,55 +267,148 @@ public class Building {
 		}
 		return false;
 	}
-	
+
 	//puts everyone in the current floors up or down queue into the elevator
 	//if the direction of the elevator is up or down respectively.
 	public void board() {
-		
+
+
+
 		if(lift.getDirection() == 1) {
 			for(int i = 0; i < floors[lift.getCurrFloor()].getUpQueue().getSize(); i++) {
-				lift.getOnBoard().add(floors[lift.getCurrFloor()].removeUpQueue());
+				if(floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+					amountOfTimeToBoard += amountOfTimeToBoardFirstPassOnCurrFloorInCurrDir();
+					lift.getOnBoard().add(floors[lift.getCurrFloor()].removeUpQueue());
+				}
 			}
 		}
 		else if(lift.getDirection() == -1) {
+
 			for(int i = 0; i < floors[lift.getCurrFloor()].getDownQueue().getSize(); i++) {
-				lift.getOnBoard().add(floors[lift.getCurrFloor()].removeDownQueue());
+				if(floors[lift.getCurrFloor()].peekDownQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+					amountOfTimeToBoard += amountOfTimeToBoardFirstPassOnCurrFloorInCurrDir();
+					lift.getOnBoard().add(floors[lift.getCurrFloor()].removeDownQueue());
+				}
 			}
 		}
 
+
 	}
 
-
+	int numTicksToOffload;
 	public int currStateOffLd(int time, Elevator lift) {
-		int numTicksToOffload = lift.numTicksToOffload();
-		
+
+
 		if(lift.getTimeInState() == 0) {
+			numTicksToOffload = lift.numTicksToOffload();
 			lift.offLoad();
 		}
-		
-		if()
-		
+
+		if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
+			if(lift.getDirection() == 1) {
+				lift.setDirection(-1);
+			}
+			else if(lift.getDirection() == -1) {
+				lift.setDirection(1);
+			}
+		}
+
 		if(lift.getTimeInState() < numTicksToOffload) {
 			return OFFLD;
 		}
-		
-	}
-//	
-//	private boolean isCallsInSameDir() {
-//		if(prioritizeCalls().getToFloor()) {
-//			
-//		}
-//	}
-//	
-	
-	
-	
 
+		else if(lift.getDirection() == 1 && !floors[lift.getCurrFloor()].isUpQueueEmpty() ||lift.getDirection() == -1 && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+			return BOARD;
+		}
+		else {
+			return CLOSEDR;
+		}
+
+	}
+	//	
+	//	private boolean isCallsInSameDir() {
+	//		if(prioritizeCalls().getToFloor()) {
+	//			
+	//		}
+	//	}
+	//	
+
+
+	public boolean noCallsInSameDirection() {
+		for(int i = 0; i < floors.length; i++) {
+			if(lift.getDirection() == 1 && !floors[i].isUpQueueEmpty()) {
+				return false;
+			}
+			else if(lift.getDirection() == -1 && !floors[i].isDownQueueEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	public boolean isCallInOppositeDirectionOnCurrFloor() {
+		if(lift.getDirection() == 1 && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+			return true;
+		}
+		if(lift.getDirection() == -1 && !floors[lift.getCurrFloor()].isUpQueueEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-		
+		board();
+		if(lift.getTimeInState() < amountOfTimeToBoard && enoughCapacityToBoardNextPass()) {
+			return BOARD;
+		}
+		else {
+			return CLOSEDR;
+		}
 	}
 
 
+	public boolean enoughCapacityToBoardNextPass() {
+		if(lift.getDirection() == 1 && floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+			return true;
+		}
+		else if(lift.getDirection() == -1 && floors[lift.getCurrFloor()].peekDownQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public int amountOfTimeToBoardFirstPassOnCurrFloorInCurrDir() {
+
+		if(lift.getDirection() == 1) {
+
+			if(floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+				if((floors[lift.getCurrFloor()].peekUpQueue().getNumber() % lift.getPassPerTick()) == 0) {
+					return (floors[lift.getCurrFloor()].peekUpQueue().getNumber() / lift.getPassPerTick());
+				} else {
+					return (floors[lift.getCurrFloor()].peekUpQueue().getNumber() / lift.getPassPerTick()) + 1;
+				}
+
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			if(floors[lift.getCurrFloor()].peekDownQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+				if((floors[lift.getCurrFloor()].peekDownQueue().getNumber() % lift.getPassPerTick()) == 0) {
+					return (floors[lift.getCurrFloor()].peekDownQueue().getNumber() / lift.getPassPerTick());
+				} else {
+					return (floors[lift.getCurrFloor()].peekDownQueue().getNumber() / lift.getPassPerTick()) + 1;
+				}
+
+			}
+			else {
+				return 0;
+			}
+
+		}
+	}
 	public int currStateCloseDr(int time, Elevator lift) {
 		lift.closeDoor();
 		if(!lift.isDoorClosed()) {
@@ -335,9 +428,9 @@ public class Building {
 		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
 			return MV1FLR;
 		}
-		
+
 		if(floorBeforeMoving != lift.getCurrFloor() && )
-		
+
 	}
 
 
