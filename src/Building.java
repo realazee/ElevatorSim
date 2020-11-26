@@ -53,6 +53,7 @@ public class Building {
 
 
 	public void updateElevator(int time) {
+		System.out.println(lift.getCurrState());
 		switch (lift.getCurrState()) {
 		case STOP: lift.updateCurrState(currStateStop(time,lift)); break;
 		case MVTOFLR: lift.updateCurrState(currStateMvToFlr(time,lift)); break;
@@ -111,7 +112,7 @@ public class Building {
 
 	private Passengers lowestPassengerGoingUp() {
 		int lowestFloorSoFar = floors.length;
-		for(int i = floors.length; i > 0; i--) {
+		for(int i = floors.length - 1; i > 0; i--) {
 			if(!floors[i].isUpQueueEmpty()) {
 				lowestFloorSoFar = i;
 			}
@@ -165,7 +166,7 @@ public class Building {
 
 
 	//return the next states.
-	public int currStateStop(Elevator lift) {
+	public int currStateStop(int time, Elevator lift) {
 
 		if(noOneWaiting()) {
 			return STOP;
@@ -223,15 +224,20 @@ public class Building {
 
 		if(lift.getMoveToFloor() > lift.getCurrFloor()) {
 			lift.setMoveToFloorDir(1);
-		} else if(lift.getMoveToFloor() > lift.getCurrFloor()) {
+		} else if(lift.getMoveToFloor() < lift.getCurrFloor()) {
 			lift.setMoveToFloorDir(-1);
 		}
 	}
 
-	public int currStateMvToFlr(Elevator lift) {
+	public int currStateMvToFlr(int time, Elevator lift) {
 		//state actions
 		lift.moveElevator();
+		System.out.println("\n\n\n\n");
+		System.out.println(lift.getCurrFloor());
+		System.out.println(lift.getMoveToFloor());
+		System.out.println("\n\n\n\n");
 		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
+			System.out.println("Who's there?");
 			setNextDropOffFloor();
 			setNextElevatorDirection();
 			return OPENDR;
@@ -247,7 +253,7 @@ public class Building {
 	}
 
 
-	public int currStateOpenDr(Elevator lift) {
+	public int currStateOpenDr(int time, Elevator lift) {
 		lift.openDoor();
 		if(!lift.isDoorOpen()) {
 			return OPENDR;
@@ -425,12 +431,24 @@ public class Building {
 	public int currStateMv1Flr(int time, Elevator lift) {
 		int floorBeforeMoving = lift.getCurrFloor();
 		lift.moveElevator();
-		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
-			return MV1FLR;
+//		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
+//			return MV1FLR;
+//		}
+
+		if(floorBeforeMoving != lift.getCurrFloor() && (passengersGetOffAtCurrFloor() || passBoardInSameDir())) {
+			return OPENDR;
 		}
-
-		if(floorBeforeMoving != lift.getCurrFloor() && )
-
+		return MV1FLR;
+	}
+	
+	public boolean passBoardInSameDir() {
+		if(lift.getDirection() == 1 && isUpCallFromCurrFloor()) {
+			return true;
+		}
+		else if(lift.getDirection() == -1 && isDownCallFromCurrFloor()) {
+			return true;
+		}
+		return false;
 	}
 
 

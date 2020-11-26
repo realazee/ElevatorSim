@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -54,7 +55,7 @@ public class ElevatorSimulation extends Application {
 		Button step = new Button("Step: ");		
 		Button run = new Button("Run");
 		RadioButton log = new RadioButton("Logging");
-		
+		stepSim.setOnAction(event -> controller.stepSim());
 		buttons.getChildren().addAll(stepSim, step, input, run, log);
 
 		Scene main = new Scene(bp, 500, 500);
