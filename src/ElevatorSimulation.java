@@ -57,11 +57,21 @@ public class ElevatorSimulation extends Application {
 		RadioButton log = new RadioButton("Logging");
 		stepSim.setOnAction(event -> controller.stepSim());
 		buttons.getChildren().addAll(stepSim, step, input, run, log);
+		
+		HBox top = new HBox(30);
+		Label time = new Label("Time: ");
+		Label occ = new Label("Elevator Occupance: ");
+		Label status = new Label("Elevator Status: ");
+		top.getChildren().addAll(time, occ, status);
+		VBox onTheTop = new VBox();
+		onTheTop.getChildren().addAll(top);
 
 		Scene main = new Scene(bp, 500, 500);
 		primaryStage.setScene(main);
+		bp.setCenter(onTheTop);
 		primaryStage.setTitle("Elevator Simulation");
 		primaryStage.show();
+		
 
 	}
 	

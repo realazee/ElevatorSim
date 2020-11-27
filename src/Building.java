@@ -93,8 +93,11 @@ public class Building {
 			return highestPassengerGoingDown();
 		}
 		if(numUpCalls() == numDownCalls()) {
-			int differenceBetweenCurrentFloorAndLowestUp = Math.abs(lift.getCurrFloor() - lowestPassengerGoingUp().getFromFloor());
-			int differenceBetweenCurrentFloorAndHighestDown = Math.abs(lift.getCurrFloor() - highestPassengerGoingDown().getFromFloor());
+			int differenceBetweenCurrentFloorAndLowestUp;
+			int differenceBetweenCurrentFloorAndHighestDown;
+			differenceBetweenCurrentFloorAndLowestUp = Math.abs(lift.getCurrFloor() - lowestPassengerGoingUp().getFromFloor());
+			differenceBetweenCurrentFloorAndHighestDown = Math.abs(lift.getCurrFloor() - highestPassengerGoingDown().getFromFloor());
+			
 			if(differenceBetweenCurrentFloorAndLowestUp < differenceBetweenCurrentFloorAndHighestDown) {
 				return lowestPassengerGoingUp();
 			}
@@ -117,6 +120,9 @@ public class Building {
 				lowestFloorSoFar = i;
 			}
 		}
+		if(floors[lowestFloorSoFar].isUpQueueEmpty()) {
+			return null;
+		}
 		return floors[lowestFloorSoFar].peekUpQueue();
 
 	}
@@ -126,6 +132,9 @@ public class Building {
 			if(!floors[i].isDownQueueEmpty()) {
 				highestFloorSoFar = i;
 			}
+		}
+		if(floors[highestFloorSoFar].isUpQueueEmpty()) {
+			return null;
 		}
 		return floors[highestFloorSoFar].peekUpQueue();
 	}
@@ -223,9 +232,9 @@ public class Building {
 	private void setNextElevatorDirection() {
 
 		if(lift.getMoveToFloor() > lift.getCurrFloor()) {
-			lift.setMoveToFloorDir(1);
+			lift.setDirection(1);
 		} else if(lift.getMoveToFloor() < lift.getCurrFloor()) {
-			lift.setMoveToFloorDir(-1);
+			lift.setDirection(-1);
 		}
 	}
 
