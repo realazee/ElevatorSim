@@ -23,7 +23,7 @@ public class Building {
 	private final int NUM_ELEVATORS;
 	public Floor[] floors;
 	private Elevator lift;
-	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(10); // we need to edit the max passenger count.
+	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(1000); // we need to edit the max passenger count.
 
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
@@ -53,7 +53,12 @@ public class Building {
 
 
 	public void updateElevator(int time) {
-		System.out.println(lift.getCurrState());
+		System.out.println("Current state: " + lift.getCurrState());
+		/* example logger...
+		if (elevatorStateChanged(lift)) 
+			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
+						+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
+		 */
 		switch (lift.getCurrState()) {
 		case STOP: lift.updateCurrState(currStateStop(time,lift)); break;
 		case MVTOFLR: lift.updateCurrState(currStateMvToFlr(time,lift)); break;
@@ -64,11 +69,7 @@ public class Building {
 		case MV1FLR: lift.updateCurrState(currStateMv1Flr(time,lift)); break;
 		}
 
-		/* example logger...
-		if (elevatorStateChanged(lift)) 
-			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
-						+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
-		 */
+		
 	}
 	//add is add to end of queue
 	//remove removes the first in the queue, and returns it
@@ -76,7 +77,7 @@ public class Building {
 	//returns the next passenger to serve
 	private Passengers prioritizeCalls() {
 		if(lift.isCallsOnCurrFloor()) {
-			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && !floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
+			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
 				if(floors[lift.getCurrFloor()].getUpQueue().getSize() >= floors[lift.getCurrFloor()].getDownQueue().getSize()) {
 					return floors[lift.getCurrFloor()].peekUpQueue(); 
 				} else {
@@ -372,11 +373,13 @@ public class Building {
 
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-		board();
+		
 		if(lift.getTimeInState() < amountOfTimeToBoard && enoughCapacityToBoardNextPass()) {
+			board();
 			return BOARD;
 		}
 		else {
+			board();
 			return CLOSEDR;
 		}
 	}

@@ -30,7 +30,7 @@ public class ElevatorSimController {
 			while ((line = br.readLine())!= null) {
 				String[] values = line.split(",");
 				
-				building.passQ.add(new Passengers(Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]), Boolean.parseBoolean(values[4]), Integer.parseInt(values[5])));
+				building.passQ.add(new Passengers(Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]) -1, Integer.parseInt(values[3]) -1, Boolean.parseBoolean(values[4]), Integer.parseInt(values[5])));
 				//System.out.println(building.passQ.toString());
 				// use values to construct the passenger...
 			}
