@@ -25,9 +25,9 @@ import javafx.util.Duration;
 
 public class ElevatorSimulation extends Application {
 	private ElevatorSimController controller;
-	private int currFloor;
-	private int passengers;
-	private int time;
+	//private int currFloor;
+	//private int passengers;
+	//private int time;
 
 	private final static int STOP = 0;
 	private final static int MVTOFLR = 1;
@@ -36,6 +36,11 @@ public class ElevatorSimulation extends Application {
 	private final static int BOARD = 4;
 	private final static int CLOSEDR = 5;
 	private final static int MV1FLR = 6;
+	Label time;
+	Label occ;
+	Label status;
+
+	Timeline tl = new Timeline(new KeyFrame(Duration.millis(100), e -> controller.stepSim()));
 
 	
 	
@@ -47,7 +52,7 @@ public class ElevatorSimulation extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		
 		BorderPane bp = new BorderPane();
-		HBox buttons = new HBox();
+		HBox buttons = new HBox(20);
 		buttons.setPrefHeight(50);
 		bp.setBottom(buttons);
 		TextField input = new TextField();
@@ -56,12 +61,20 @@ public class ElevatorSimulation extends Application {
 		Button run = new Button("Run");
 		RadioButton log = new RadioButton("Logging");
 		stepSim.setOnAction(event -> controller.stepSim());
+		step.setOnAction(event -> {
+			tl.setCycleCount(Integer.parseInt(input.getText()));
+			tl.play();
+		});
+		run.setOnAction(event -> {
+			tl.setCycleCount(Animation.INDEFINITE);
+			tl.play();
+		});
 		buttons.getChildren().addAll(stepSim, step, input, run, log);
 		
 		HBox top = new HBox(30);
-		Label time = new Label("Time: ");
-		Label occ = new Label("Elevator Occupance: ");
-		Label status = new Label("Elevator Status: ");
+		time = new Label("Time: " + controller.getStepCnt());
+		occ = new Label("Elevator Occupance: To Be Implemented");
+		status = new Label("Elevator Status: TBI");
 		top.getChildren().addAll(time, occ, status);
 		VBox onTheTop = new VBox();
 		onTheTop.getChildren().addAll(top);
@@ -75,6 +88,13 @@ public class ElevatorSimulation extends Application {
 
 	}
 	
+	public void updateGUI() {
+ 		//gui.time = new Label("Time: " + stepCnt);
+		time.setText("Time: "+ controller.getStepCnt());
+		System.out.println("step count is currently: " + controller.getStepCnt());
+		
+	}
+ 
 	public static void main (String[] args) {
 		
 		Application.launch(args);

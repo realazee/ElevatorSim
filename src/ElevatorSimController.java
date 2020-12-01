@@ -2,12 +2,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javafx.scene.control.Label;
+
 public class ElevatorSimController {
 	private ElevatorSimulation gui;
 	private Building building;
 	private int stepCnt = 0;
 	private boolean endSim = false;
 	String[] configValues = new String[7];
+	
+	public int getStepCnt() {
+		return stepCnt;
+	}
 		
 	public ElevatorSimController(ElevatorSimulation gui) {
 		this.gui = gui;
@@ -60,6 +66,7 @@ public class ElevatorSimController {
 		stepCnt++;
 		building.checkPassengerQueue(stepCnt);
 		building.updateElevator(stepCnt);
+		gui.updateGUI();
 //		System.out.println("Hello World");
 		// need to check to see if passengers should show up on floors
 		// then updateElevator...
@@ -67,7 +74,7 @@ public class ElevatorSimController {
 		
 		
 	}
- 
+ 	
  	
  	
  	
