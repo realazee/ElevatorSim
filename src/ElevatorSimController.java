@@ -58,9 +58,16 @@ public class ElevatorSimController {
 		}
 	}
 	
-	public void enableLogging() {
-		building.enableLogging();
+	public void toggleLogging(boolean checked) {
+		if(checked) {
+			building.enableLogging();
+		} 
+		else {
+			building.disableLogging();
+		}
 	}
+	
+	
 	
  	public void stepSim() {
 		stepCnt++;
@@ -74,6 +81,7 @@ public class ElevatorSimController {
 		
 		
 	}
+ 	
  	
  	
  	

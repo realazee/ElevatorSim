@@ -51,14 +51,31 @@ public class Building {
 		lift.setLoggerFH(fh);
 	}
 
-
+	private boolean elevatorStateChanged(Elevator lift) {
+		if(lift.getPrevState() == lift.getCurrState()) {
+			return false;
+		}
+		return true;
+	}
+	private String printState(int liftState) {
+		switch(liftState) {
+			case STOP: return "STOP";
+			case MVTOFLR: return "MVTOFLR";
+			case OPENDR: return "OPENDR";
+			case OFFLD: return "OFFLD";
+			case BOARD: return "BOARD";
+			case CLOSEDR: return "CLOSEDR";
+			case MV1FLR: return "MV1FLR";
+			default: return "";
+		}
+	}
 	public void updateElevator(int time) {
 		System.out.println("Current state: " + lift.getCurrState());
-		/* example logger...
+		
 		if (elevatorStateChanged(lift)) 
 			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
 						+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
-		 */
+		
 		switch (lift.getCurrState()) {
 		case STOP: lift.updateCurrState(currStateStop(time,lift)); break;
 		case MVTOFLR: lift.updateCurrState(currStateMvToFlr(time,lift)); break;
@@ -446,7 +463,7 @@ public class Building {
 //		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
 //			return MV1FLR;
 //		}
-
+		System.out.println("Previous Floor: " + floorBeforeMoving + " Current Floor: " + lift.getCurrFloor());
 		if(floorBeforeMoving != lift.getCurrFloor() && (passengersGetOffAtCurrFloor() || passBoardInSameDir())) {
 			return OPENDR;
 		}
@@ -467,6 +484,11 @@ public class Building {
 	public void enableLogging() {
 		// need to pass this along to both the elevator and floor classes...
 		LOGGER.setLevel(Level.INFO);
+	}
+	
+	public void disableLogging() {
+		// need to pass this along to both the elevator and floor classes...
+		LOGGER.setLevel(Level.OFF);
 	}
 
 }

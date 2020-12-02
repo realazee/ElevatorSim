@@ -225,14 +225,10 @@ public class Elevator {
 	
 	public void updateCurrState(int newCurrState) {
 		prevState = currState;
-		if(currState == newCurrState) {
-			timeInState++;
-		}
-		else if(!(currState == newCurrState)) {
-			currState = newCurrState;
+		currState = newCurrState;
+		if(currState != prevState) {
 			timeInState = 0;
 		}
-		
 	}
 	
 	public void moveElevator() {

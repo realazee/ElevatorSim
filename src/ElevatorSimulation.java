@@ -60,6 +60,7 @@ public class ElevatorSimulation extends Application {
 		Button step = new Button("Step: ");		
 		Button run = new Button("Run");
 		RadioButton log = new RadioButton("Logging");
+		log.setOnAction(event -> controller.toggleLogging(log.isSelected()));
 		stepSim.setOnAction(event -> controller.stepSim());
 		step.setOnAction(event -> {
 			tl.setCycleCount(Integer.parseInt(input.getText()));
