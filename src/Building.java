@@ -92,6 +92,13 @@ public class Building {
 	//remove removes the first in the queue, and returns it
 	//peek returns the first in the queue but doesnt remove it.
 	//returns the next passenger to serve
+	public void logElevatorConfig() {
+		LOGGER.info("CONFIG: Capacity="+lift.getCapacity()+" Ticks-Floor="
+
+		+lift.getTicksPerFloor()+" Ticks-Door="+lift.getTicksDoorOpenClose()
+		+" Ticks-Passengers="+lift.getPassPerTick());
+	}
+	
 	private Passengers prioritizeCalls() {
 		if(lift.isCallsOnCurrFloor()) {
 			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
@@ -178,14 +185,37 @@ public class Building {
 	}
 
 	public void checkPassengerQueue(int globalTime) {
-		if(passQ.peek().getTime() == globalTime) {
-			int targetFloor = passQ.peek().getFromFloor();
-			if(passQ.peek().isGoingUp()) {
+		/* Passengers P = passQ.peek()
+		 * while(p.getTime() == globalTime) {
+		 * p = passQ.peek()	
+		 */
+		 
+		
+		
+		while(!passQ.isEmpty() && passQ.peek().getTime() == globalTime) {
+			
+			Passengers p = passQ.peek();
+			System.out.println("LOOPED_____ONCE");
+			int targetFloor = p.getFromFloor();
+			if(p.isGoingUp()) {
+				LOGGER.info("Time="+globalTime+" Called="+p.getNumber()+" Floor="+
+						(p.getFromFloor()+1)
+
+						+" Dir="+((lift.getDirection() == 1)?"Up":"Down")+" passID=" + p.getId());
 				floors[targetFloor].addUpQueue(passQ.remove());
 			}
-			else if(passQ.peek().isGoingDown()) {
+			else if(p.isGoingDown()) {
+				LOGGER.info("Time="+globalTime+" Called="+p.getNumber()+" Floor="+
+						(p.getFromFloor()+1)
+
+						+" Dir="+((lift.getDirection() == 1)?"Up":"Down")+" passID=" + p.getId());
 				floors[targetFloor].addDownQueue(passQ.remove());
 			}
+//			if(passQ.isEmpty()) {S
+//				break;
+//			}
+			
+			p = passQ.peek();
 		}
 	}
 

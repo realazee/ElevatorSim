@@ -59,8 +59,10 @@ public class ElevatorSimController {
 	}
 	
 	public void toggleLogging(boolean checked) {
+		
 		if(checked) {
 			building.enableLogging();
+			building.logElevatorConfig();
 		} 
 		else {
 			building.disableLogging();
