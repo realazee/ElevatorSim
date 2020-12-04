@@ -78,6 +78,9 @@ public class ElevatorSimController {
 		building.updateElevator(stepCnt);
 		//building.detectEndOfSimulation(stepCnt);
 		gui.updateGUI();
+		if(building.detectEndOfSimulation(stepCnt)) {
+			gui.stopTimeLine();
+		}
 //		System.out.println("Hello World");
 		// need to check to see if passengers should show up on floors
 		// then updateElevator...

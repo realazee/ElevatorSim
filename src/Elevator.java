@@ -252,6 +252,7 @@ public class Elevator {
 	}
 	
 	public void openDoor() {
+		prevFloor = currFloor;
 		doorState++;
 		
 	}

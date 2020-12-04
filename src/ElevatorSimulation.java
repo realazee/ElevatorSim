@@ -95,6 +95,10 @@ public class ElevatorSimulation extends Application {
 		System.out.println("step count is currently: " + controller.getStepCnt());
 		
 	}
+	public void stopTimeLine() {
+		tl.stop();
+		System.exit(0);
+	}
  
 	public static void main (String[] args) {
 		
