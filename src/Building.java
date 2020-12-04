@@ -195,7 +195,7 @@ public class Building {
 		while(!passQ.isEmpty() && passQ.peek().getTime() == globalTime) {
 			
 			Passengers p = passQ.peek();
-			System.out.println("LOOPED_____ONCE");
+			//System.out.println("LOOPED_____ONCE");
 			int targetFloor = p.getFromFloor();
 			if(p.isGoingUp()) {
 				LOGGER.info("Time="+globalTime+" Called="+p.getNumber()+" Floor="+
@@ -433,10 +433,11 @@ public class Building {
 
 
 	public boolean enoughCapacityToBoardNextPass() {
-		if(lift.getDirection() == 1 && floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+		
+		if(!floors[lift.getCurrFloor()].isUpQueueEmpty() && lift.getDirection() == 1 && floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
 			return true;
 		}
-		else if(lift.getDirection() == -1 && floors[lift.getCurrFloor()].peekDownQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
+		else if(!floors[lift.getCurrFloor()].isDownQueueEmpty() && lift.getDirection() == -1 && floors[lift.getCurrFloor()].peekDownQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
 			return true;
 		}
 		else {
