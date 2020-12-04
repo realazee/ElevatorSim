@@ -259,6 +259,7 @@ public class Building {
 	public boolean noOneWaiting() {
 		for(int i = 0; i < floors.length; i++) {
 			if(!floors[i].getUpQueue().isEmpty()) {
+				
 				return false;
 			}
 			if(!floors[i].getDownQueue().isEmpty()) {
@@ -374,7 +375,8 @@ public class Building {
 
 		if(lift.getTimeInState() == 0) {
 			numTicksToOffload = lift.numTicksToOffload();
-			lift.offLoad();
+			logArrived(time);
+			lift.offLoad(time);
 		}
 
 		if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
@@ -453,20 +455,34 @@ public class Building {
 
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-
-		if(lift.getTimeInState() < amountOfTimeToBoard && enoughCapacityToBoardNextPass()) {
+		if(!enoughCapacityToBoardNextPass(time) && !floors[lift.getCurrFloor()].isUpQueueEmpty() && !floors[lift.getCurrFloor()].isDownQueueEmpty() ) {
+			Passengers skippedPassengers;
+			if(lift.getDirection() == 1) {
+				skippedPassengers = floors[lift.getCurrFloor()].peekUpQueue(); 
+			}
+			else {
+				skippedPassengers = floors[lift.getCurrFloor()].peekDownQueue();
+			}
+			LOGGER.info("Time="+time+" Skip="+skippedPassengers.getNumber()+" Floor="+ (lift.getCurrFloor()+1)
+					+" Dir="+((lift.getDirection()>0)?"Up":"Down")+" passID=" + skippedPassengers.getId());
+		}
+		if(lift.getTimeInState() < amountOfTimeToBoard && enoughCapacityToBoardNextPass(time)) {
+		
 			board(time);
 			return BOARD;
 		}
 		else {
+		
 			board(time);
 			return CLOSEDR;
 		}
 	}
 
 
-	public boolean enoughCapacityToBoardNextPass() {
-
+	public boolean enoughCapacityToBoardNextPass(int time) {
+		
+		
+		
 		if(!floors[lift.getCurrFloor()].isUpQueueEmpty() && lift.getDirection() == 1 && floors[lift.getCurrFloor()].peekUpQueue().getNumber() <= lift.getCapacity() - lift.getOnBoard().size()) {
 			return true;
 		}
@@ -474,6 +490,9 @@ public class Building {
 			return true;
 		}
 		else {
+			//LOGGING PART
+			
+			//END LOGGING PART
 			return false;
 		}
 	}
@@ -598,5 +617,38 @@ public class Building {
 		// need to pass this along to both the elevator and floor classes...
 		LOGGER.setLevel(Level.OFF);
 	}
+	
+	public void logArrived(int time) {
+		for(int i = 0; i < lift.getOnBoard().size(); i++) {
+			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
+				LOGGER.info("Time="+time+" Arrived="+lift.getOnBoard().get(i).getNumber()+" Floor="+ (lift.getCurrFloor()+1)
+						+" passID=" + lift.getOnBoard().get(i).getId());
+
+			
+			}
+		}
+		
+	}
+	/*
+	public void detectEndOfSimulation(int time) {
+	
+		if(lift.getOnBoard().isEmpty() && allFloorsEmpty()) {
+			LOGGER.info("CONFIG: Capacity="+lift.getCapacity()+" Ticks-Floor="
+
+			+lift.getTicksPerFloor()+" Ticks-Door="+lift.getTicksDoorOpenClose()
+			+" Ticks-Passengers="+lift.getPassPerTick());
+			lift.setCurrState(STOP);
+		}
+	}
+	public boolean allFloorsEmpty() {
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].isUpQueueEmpty() && !floors[i].isDownQueueEmpty()) {
+				return false;
+				
+			}
+		}
+		return true;
+	}
+	*/
 
 }

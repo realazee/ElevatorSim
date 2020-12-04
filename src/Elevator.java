@@ -81,9 +81,12 @@ public class Elevator {
 
 	//deletes all passengers onboard the elevator that need to get off on the
 	//current floor.
-	public void offLoad() {
+	public void offLoad(int time) {
 		for(int i = 0; i < onBoard.size(); i++) {
 			if(onBoard.get(i).getToFloor() == currFloor) {
+				//LOGGER.info("Time="+time+" Arrived="+onBoard.get(i).getNumber()+" Floor="+ (currFloor+1)
+					//	+" passID=" + onBoard.get(i).getId());
+				
 				onBoard.remove(i);
 				i--;
 			}

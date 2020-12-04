@@ -74,7 +74,9 @@ public class ElevatorSimController {
  	public void stepSim() {
 		stepCnt++;
 		building.checkPassengerQueue(stepCnt);
+		
 		building.updateElevator(stepCnt);
+		//building.detectEndOfSimulation(stepCnt);
 		gui.updateGUI();
 //		System.out.println("Hello World");
 		// need to check to see if passengers should show up on floors
