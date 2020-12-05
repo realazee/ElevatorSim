@@ -295,6 +295,7 @@ public class Building {
 
 	public int currStateMvToFlr(int time, Elevator lift) {
 		//state actions
+		
 		lift.moveElevator();
 		System.out.println("\n\n\n\n");
 		System.out.println(lift.getCurrFloor());
@@ -581,6 +582,15 @@ public class Building {
 
 
 	public int currStateMv1Flr(int time, Elevator lift) {
+
+		if(lift.getDirection() == 1 && lift.getCurrFloor() == NUM_FLOORS - 1) {
+			lift.setDirection(-1);
+			
+		}
+		else if(lift.getDirection() == -1 && lift.getCurrFloor() ==0) {
+			lift.setDirection(1);
+		
+		}
 		int floorBeforeMoving = lift.getCurrFloor();
 		lift.moveElevator();
 
