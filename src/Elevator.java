@@ -226,21 +226,35 @@ public class Elevator {
 	//helpers
 	
 	
-	public void updateCurrState(int newCurrState) {
+	public void updateCurrState(int currState) {
+		/*
 		prevState = currState;
 		currState = newCurrState;
 		if(currState != prevState) {
 			timeInState = 0;
 		}
+		*/
+		this.prevState = this.currState;
+		this.currState = currState;
+		if (this.prevState != this.currState)
+		timeInState = 0;
+		
 	}
 	
 	public void moveElevator() {
 		timeInState++;
 		prevFloor = currFloor;
+		if ((timeInState % ticksPerFloor) == 0) {
+		currFloor = currFloor + direction;
+		}
+		/*timeInState++;
+		prevFloor = currFloor;
 		if((timeInState % ticksPerFloor) == 0) {
 			currFloor += direction;
 			System.out.println("Current Floor: " + currFloor);
+			
 		}
+		*/
 		
 	}
 	
@@ -268,6 +282,7 @@ public class Elevator {
 		
 	}
 	public boolean isDoorOpen() {
+		
 		if(doorState == ticksDoorOpenClose) {
 			return true;
 		}

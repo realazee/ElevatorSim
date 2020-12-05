@@ -314,15 +314,16 @@ public class Building {
 
 	public int currStateOpenDr(int time, Elevator lift) {
 		lift.openDoor();
-		if(!lift.isDoorOpen()) {
-			return OPENDR;
+		
+		if(lift.isDoorOpen()) {
+			if(lift.isDoorOpen() && passengersGetOffAtCurrFloor()) {
+				return OFFLD;
+			}
+			else {
+				return BOARD;
+			}
 		}
-		else if(lift.isDoorOpen() && passengersGetOffAtCurrFloor()) {
-			return OFFLD;
-		}
-		else {
-			return BOARD;
-		}
+		return OPENDR;
 	}
 	public boolean passengersGetOffAtCurrFloor() {
 		for(int i = 0; i < lift.getOnBoard().size(); i++) {
@@ -532,28 +533,29 @@ public class Building {
 		//if(!lift.isDoorClosed()) {
 		//return CLOSEDR;
 		//}
+		if(lift.isDoorClosed()) {
+			if(lift.getOnBoard().size() == 0) {
+				if(noOneWaiting()) {
+					return STOP;
+				}
+				if(!noCallsInSameDirection()) {
+					return MV1FLR;
+				}
+				else {
+					if(lift.getDirection() == 1) {
+						lift.setDirection(-1);
+						return MV1FLR;
+					}
+					else if(lift.getDirection() == -1) {
+						lift.setDirection(1);
+						return MV1FLR;
+					}
+				}
 
-		if(lift.getOnBoard().size() == 0) {
-			if(noOneWaiting()) {
-				return STOP;
-			}
-			if(!noCallsInSameDirection()) {
-				return MV1FLR;
 			}
 			else {
-				if(lift.getDirection() == 1) {
-					lift.setDirection(-1);
-					return MV1FLR;
-				}
-				else if(lift.getDirection() == -1) {
-					lift.setDirection(1);
-					return MV1FLR;
-				}
+				return MV1FLR;
 			}
-
-		}
-		else {
-			return MV1FLR;
 		}
 		return CLOSEDR;
 
@@ -576,9 +578,43 @@ public class Building {
 	public int currStateMv1Flr(int time, Elevator lift) {
 		int floorBeforeMoving = lift.getCurrFloor();
 		lift.moveElevator();
+
+		if(floorBeforeMoving != lift.getCurrFloor()) {
+			if(passengersGetOffAtCurrFloor()) {
+
+				return OPENDR;
+			}
+			if(passBoardInSameDir()) {
+
+				return OPENDR;
+			}
+			if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
+
+				if(lift.getDirection() == 1) {
+					lift.setDirection(-1);
+					return OPENDR;
+				}
+				else if(lift.getDirection() == -1) {
+					lift.setDirection(1);
+					return OPENDR;
+				}
+			}
+
+			else {
+
+				return MV1FLR;
+			}
+
+		}
+
+		return MV1FLR;
+
+
+
 		//		if(floorBeforeMoving == lift.getCurrFloor() || lift.numPassengersToOffload() == 0) {
 		//			return MV1FLR;
 		//		}
+		/*
 		System.out.println("Previous Floor: " + floorBeforeMoving + " Current Floor: " + lift.getCurrFloor());
 		if(floorBeforeMoving != lift.getCurrFloor() && (passengersGetOffAtCurrFloor() || passBoardInSameDir())) {
 			return OPENDR;
@@ -595,6 +631,7 @@ public class Building {
 			}
 		}
 		return MV1FLR;
+		 */
 	}
 
 	public boolean passBoardInSameDir() {
@@ -637,7 +674,7 @@ public class Building {
 
 			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
 			+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
-			
+
 			LOGGER.info("Time="+time+" Detected End of Simulation");
 			fh.flush();
 			fh.close();
