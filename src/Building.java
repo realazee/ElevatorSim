@@ -24,7 +24,7 @@ public class Building {
 	public Floor[] floors;
 	private Elevator lift;
 
-	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(1000); // we need to edit the max passenger count.
+	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(100000); // we need to edit the max passenger count.
 
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {
@@ -45,7 +45,7 @@ public class Building {
 		// create the floors
 		floors = new Floor[NUM_FLOORS];
 		for (int i = 0; i < NUM_FLOORS; i++) {
-			floors[i]= new Floor(10); 
+			floors[i]= new Floor(100); 
 		}
 		floors[0].setLoggerFH(fh); // only need to pass the file to one of the floors.
 		lift = new Elevator(capacity, ticksPerFloor, ticksDoorOpenClose, passPerTick);
@@ -242,6 +242,7 @@ public class Building {
 	//isUpCallFromCurrFloor()
 
 	private boolean isUpCallFromCurrFloor() {
+		
 		if(floors[lift.getCurrFloor()].isUpQueueEmpty()) {
 			return false;
 		}
@@ -271,12 +272,16 @@ public class Building {
 
 	//passengers have been picked up, sets elevator MVTOFLR to passengers target floor.
 	private void setNextDropOffFloor() {
-		lift.setMoveToFloor(prioritizeCalls().getToFloor());
+		if(!(prioritizeCalls() == null)) {
+			lift.setMoveToFloor(prioritizeCalls().getToFloor());
+		}
 	}
 
 	//passengers have not been picked up, sets elevator MVTOFLR to floor of prioritizeCalls().
 	private void setNextPickUpFloor() {
-		lift.setMoveToFloor(prioritizeCalls().getFromFloor());
+		if(!(prioritizeCalls() == null)) {
+			lift.setMoveToFloor(prioritizeCalls().getFromFloor());
+		}
 	}
 
 	private void setNextElevatorDirection() {
@@ -314,7 +319,7 @@ public class Building {
 
 	public int currStateOpenDr(int time, Elevator lift) {
 		lift.openDoor();
-		
+
 		if(lift.isDoorOpen()) {
 			if(lift.isDoorOpen() && passengersGetOffAtCurrFloor()) {
 				return OFFLD;
@@ -580,14 +585,6 @@ public class Building {
 		lift.moveElevator();
 
 		if(floorBeforeMoving != lift.getCurrFloor()) {
-			if(passengersGetOffAtCurrFloor()) {
-
-				return OPENDR;
-			}
-			if(passBoardInSameDir()) {
-
-				return OPENDR;
-			}
 			if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
 
 				if(lift.getDirection() == 1) {
@@ -599,6 +596,16 @@ public class Building {
 					return OPENDR;
 				}
 			}
+			
+			if(passengersGetOffAtCurrFloor()) {
+
+				return OPENDR;
+			}
+			if(passBoardInSameDir()) {
+
+				return OPENDR;
+			}
+			
 
 			else {
 
