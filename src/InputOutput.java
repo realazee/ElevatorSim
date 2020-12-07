@@ -19,7 +19,7 @@ public class InputOutput {
 		//InitializePassengerData("ElevatorTest.csv");
 		InitializeElevatorConfig("ElevatorSimConfig.csv");
 		System.out.println(Arrays.toString(configValues));
-		building = new Building(Integer.parseInt(configValues[0]),Integer.parseInt(configValues[1]),Integer.parseInt(configValues[3]), Integer.parseInt(configValues[4]),Integer.parseInt(configValues[5]),Integer.parseInt(configValues[6]));
+		building = new Building(Integer.parseInt(configValues[0]),Integer.parseInt(configValues[1]),Integer.parseInt(configValues[3]), Integer.parseInt(configValues[4]),Integer.parseInt(configValues[5]),Integer.parseInt(configValues[6]), configValues[2]);
 		System.out.println(configValues[2]);
 		InitializePassengerData(configValues[2]);
 	}

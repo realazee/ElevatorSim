@@ -291,7 +291,9 @@ public class Elevator {
 		}
 	}
 	
-	
+	public void incrementTimeInState() {
+		timeInState++;
+	}
 
 	public void enableLogging() {
 		LOGGER.setLevel(Level.INFO);
@@ -316,7 +318,15 @@ public class Elevator {
 		return(this.getMoveToFloor()== this.getCurrFloor());
 	}
 	
-	
+	public boolean isFull() {
+		if(getOnBoard().size() == capacity) {
+			return true;
+		}
+		return false;
+	}
+	public int getRemainingCapacity() {
+		return capacity - getOnBoard().size();
+	}
 	
 //	public boolean isCallsInSameDir() {
 //		return (direction == 1 && isCallsFromAbove());	
