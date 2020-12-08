@@ -22,10 +22,12 @@ public class Building {
 	private final int NUM_FLOORS;
 	private final int NUM_ELEVATORS;
 	private int numBoarded;
+	private int offLdDelay;
 
 	private Floor[] floors;
 	private Elevator lift;
-
+	private GenericQueue<Passengers>gaveUpQueue = new GenericQueue<Passengers>(1000);
+	private ArrayList<Passengers>arrivedList = new ArrayList<Passengers>();
 
 	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(100000); // we need to edit the max passenger count.
 
@@ -346,10 +348,10 @@ public class Building {
 	//puts everyone in the current floors up or down queue into the elevator
 	//if the direction of the elevator is up or down respectively.
 	public void board(int time) {
-		
 
-		
-		
+
+
+
 		/*
 		if(lift.getDirection() == 1) {
 			for(int i = 0; i < floors[lift.getCurrFloor()].getUpQueue().getSize(); i++) {
@@ -383,7 +385,49 @@ public class Building {
 
 	int numTicksToOffload;
 	public int currStateOffLd(int time, Elevator lift) {
+		
+		int numPassToOffLd;
+		if(lift.getPrevState() != OFFLD) {
+			//Determine # of passengers to offload
+			numPassToOffLd = lift.numPassengersToOffload();
+			//Determine offload delay;
+			if(numPassToOffLd % lift.getPassPerTick() == 0) {
+				offLdDelay = numPassToOffLd / lift.getPassPerTick();
+			}
+			else {
+				offLdDelay = numPassToOffLd / lift.getPassPerTick() + 1;
+			}
+			//offload all passenger groups to arrived passengers arraylist
+			offLoadAllPassengers(time);
+		}
+		lift.incrementTimeInState();
+		if(lift.getTimeInState() == offLdDelay) {
+			if(lift.getDirection() == 1  && !floors[lift.getCurrFloor()].isUpQueueEmpty() || lift.getDirection() == -1  && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+				return BOARD;
+			}
+			if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
 
+				if(lift.getDirection() == 1) {
+					lift.setDirection(-1);
+					return BOARD;
+				}
+				else if(lift.getDirection() == -1) {
+					lift.setDirection(1);
+					return BOARD;
+				}
+			}
+			return CLOSEDR;
+
+		}
+		return OFFLD;
+		
+		
+		
+		
+		
+		
+		
+		/*
 
 		if(lift.getTimeInState() == 0) {
 			numTicksToOffload = lift.numTicksToOffload();
@@ -411,7 +455,19 @@ public class Building {
 		else {
 			return CLOSEDR;
 		}
+		 */
 
+	}
+	public void offLoadAllPassengers(int time) {
+		for(int i = 0; i < lift.getOnBoard().size(); i++) {
+			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
+				//LOGGER.info("Time="+time+" Arrived="+onBoard.get(i).getNumber()+" Floor="+ (currFloor+1)
+					//	+" passID=" + onBoard.get(i).getId());
+				lift.getOnBoard().get(i).setTimeArrived(time);
+				arrivedList.add(lift.getOnBoard().remove(i));
+				i--;
+			}
+		}
 	}
 	//	
 	//	private boolean isCallsInSameDir() {
@@ -479,8 +535,16 @@ public class Building {
 				currentlyBoarding = floors[lift.getCurrFloor()].peekDownQueue();
 			}
 			//if currentlyBoarding.hasGivenUp, move currentlyBoarding to the gaveUpQueue
+			if(currentlyBoarding.getGiveUpTime() <= time) {
+				if(lift.getDirection() == 1) {
+					gaveUpQueue.add(floors[lift.getCurrFloor()].removeUpQueue());
+				}
+				else {
+					gaveUpQueue.add(floors[lift.getCurrFloor()].removeDownQueue());
+				}
+			}
 			//else if there is not enough room to board the passenger, break;
-			if(lift.getRemainingCapacity() < currentlyBoarding.getNumber()) {
+			else if(lift.getRemainingCapacity() < currentlyBoarding.getNumber()) {
 				break;
 			}
 			else {
@@ -491,7 +555,7 @@ public class Building {
 				//log the passenger group boarding
 				LOGGER.info("Time="+time+" Board="+currentlyBoarding.getNumber()+" Floor="+ (lift.getCurrFloor()+1)
 						+" Dir="+((lift.getDirection()>0)?"Up":"Down")+" passID=" + currentlyBoarding.getId());
-				
+
 				//remove from floor queue and put in elevator
 				if(lift.getDirection() == 1) {
 					lift.getOnBoard().add(floors[lift.getCurrFloor()].removeUpQueue());
@@ -511,15 +575,15 @@ public class Building {
 		}
 		//increment timeInState in lift
 		lift.incrementTimeInState();
-		
+
 		if(lift.getTimeInState() == delayTime) {
 			return CLOSEDR;
 		}
 		else {
 			return BOARD;
 		}
-		
-		
+
+
 
 		/*
 		if(!enoughCapacityToBoardNextPass(time) && !floors[lift.getCurrFloor()].isUpQueueEmpty() && !floors[lift.getCurrFloor()].isDownQueueEmpty() ) {

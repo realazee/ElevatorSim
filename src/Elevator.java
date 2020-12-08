@@ -97,7 +97,7 @@ public class Elevator {
 		int counter = 0;
 		for(int i = 0; i < onBoard.size(); i++) {
 			if(onBoard.get(i).getToFloor() == currFloor) {
-				counter++;
+				counter += onBoard.get(i).getNumber();
 			}
 		}
 		return counter;

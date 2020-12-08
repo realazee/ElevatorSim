@@ -19,6 +19,7 @@ public class Passengers {
 	private int timeArrived;
 	
 	
+	
 	public Passengers(int time, int number, int fromFloor, int toFloor, boolean polite, int giveUpTime) {
 		this.time = time;
 		this.number = number;
@@ -30,6 +31,10 @@ public class Passengers {
 		ID++;
 	}
 	
+	
+	
+
+
 	public static int getID() {
 		return ID;
 	}
