@@ -426,7 +426,6 @@ public class Building {
 		
 		
 		
-		
 		/*
 
 		if(lift.getTimeInState() == 0) {
