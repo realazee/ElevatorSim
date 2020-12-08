@@ -97,7 +97,7 @@ public class ElevatorSimulation extends Application {
 	}
 	public void stopTimeLine() {
 		tl.stop();
-		System.exit(0);
+		
 	}
  
 	public static void main (String[] args) {

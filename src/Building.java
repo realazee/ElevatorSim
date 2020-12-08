@@ -106,6 +106,43 @@ public class Building {
 	}
 
 	private Passengers prioritizeCalls() {
+		
+		if(passBoardOnCurrFloor()) {
+			if(!floors[lift.getCurrFloor()].isUpQueueEmpty() && floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+				return floors[lift.getCurrFloor()].peekUpQueue();
+			}
+			if(floors[lift.getCurrFloor()].isUpQueueEmpty() && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+				return floors[lift.getCurrFloor()].peekDownQueue();
+			}
+			if(!floors[lift.getCurrFloor()].isUpQueueEmpty() && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
+				if(floors[lift.getCurrFloor()].getUpQueue().getSize() >= floors[lift.getCurrFloor()].getDownQueue().getSize()) {
+					return floors[lift.getCurrFloor()].peekUpQueue();
+				}
+				else {
+					return floors[lift.getCurrFloor()].peekDownQueue();
+				}
+			}
+			
+		}
+		if(numUpCalls() > numDownCalls()) {
+			return lowestPassengerGoingUp();
+		}
+		if(numUpCalls() < numDownCalls()) {
+			return highestPassengerGoingDown();
+		}
+		if(numUpCalls() == numDownCalls()) {
+			if((Math.abs(lift.getCurrFloor() - lowestPassengerGoingUp().getFromFloor())) < (Math.abs(lift.getCurrFloor() - highestPassengerGoingDown().getFromFloor()))){
+				return lowestPassengerGoingUp();
+			}
+			if((Math.abs(lift.getCurrFloor() - lowestPassengerGoingUp().getFromFloor())) > (Math.abs(lift.getCurrFloor() - highestPassengerGoingDown().getFromFloor()))){
+				return highestPassengerGoingDown();
+			}
+		}
+		return lowestPassengerGoingUp();
+		
+		
+		
+		/*
 		if(lift.isCallsOnCurrFloor()) {
 			if(!floors[lift.getCurrFloor()].getUpQueue().isEmpty() && floors[lift.getCurrFloor()].getDownQueue().isEmpty()) {
 				if(floors[lift.getCurrFloor()].getUpQueue().getSize() >= floors[lift.getCurrFloor()].getDownQueue().getSize()) {
@@ -139,7 +176,7 @@ public class Building {
 
 		return lowestPassengerGoingUp();
 
-
+*/
 	}
 
 
@@ -671,6 +708,24 @@ public class Building {
 		//if(!lift.isDoorClosed()) {
 		//return CLOSEDR;
 		//}
+		//politeness
+		if(lift.getDirection() == 1) {
+			if(!(floors[lift.getCurrFloor()].peekUpQueue() == null) && !floors[lift.getCurrFloor()].peekUpQueue().isPolite()) {
+				floors[lift.getCurrFloor()].peekUpQueue().setPolite(true);
+				return OPENDR;
+				
+			}
+		}
+		if(lift.getDirection() == -1) {
+			if(!(floors[lift.getCurrFloor()].peekDownQueue() == null) && !floors[lift.getCurrFloor()].peekDownQueue().isPolite()) {
+				floors[lift.getCurrFloor()].peekDownQueue().setPolite(true);
+				return OPENDR;
+				
+			}
+		}
+		
+		
+		
 		if(lift.isDoorClosed()) {
 			if(lift.getOnBoard().size() == 0) {
 				if(noOneWaiting()) {
