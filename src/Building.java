@@ -183,7 +183,7 @@ public class Building {
 
 	private Passengers lowestPassengerGoingUp() {
 		int lowestFloorSoFar = floors.length;
-		for(int i = floors.length - 1; i > 0; i--) {
+		for(int i = floors.length - 1; i >= 0; i--) {
 			if(!floors[i].isUpQueueEmpty()) {
 				lowestFloorSoFar = i;
 			}
@@ -201,10 +201,10 @@ public class Building {
 				highestFloorSoFar = i;
 			}
 		}
-		if(floors[highestFloorSoFar].isUpQueueEmpty()) {
+		if(floors[highestFloorSoFar].isDownQueueEmpty()) {
 			return null;
 		}
-		return floors[highestFloorSoFar].peekUpQueue();
+		return floors[highestFloorSoFar].peekDownQueue();
 	}
 
 
@@ -244,14 +244,14 @@ public class Building {
 				LOGGER.info("Time="+globalTime+" Called="+p.getNumber()+" Floor="+
 						(p.getFromFloor()+1)
 
-						+" Dir="+((lift.getDirection() == 1)?"Up":"Down")+" passID=" + p.getId());
+						+" Dir="+((p.getToFloor() > p.getFromFloor())?"Up":"Down")+" passID=" + p.getId());
 				floors[targetFloor].addUpQueue(passQ.remove());
 			}
 			else if(p.isGoingDown()) {
 				LOGGER.info("Time="+globalTime+" Called="+p.getNumber()+" Floor="+
 						(p.getFromFloor()+1)
 
-						+" Dir="+((lift.getDirection() == 1)?"Up":"Down")+" passID=" + p.getId());
+						+" Dir="+((p.getToFloor() > p.getFromFloor())?"Up":"Down")+" passID=" + p.getId());
 				floors[targetFloor].addDownQueue(passQ.remove());
 			}
 			//			if(passQ.isEmpty()) {S
@@ -571,7 +571,7 @@ public class Building {
 				currentlyBoarding = floors[lift.getCurrFloor()].peekDownQueue();
 			}
 			//if currentlyBoarding.hasGivenUp, move currentlyBoarding to the gaveUpQueue
-			if(currentlyBoarding.getGiveUpTime() <= time) {
+			if(currentlyBoarding.getGiveUpTime() <= time)  {
 				if(lift.getDirection() == 1) {
 					gaveUpQueue.add(floors[lift.getCurrFloor()].removeUpQueue());
 				}
@@ -620,7 +620,7 @@ public class Building {
 		}
 
 
-
+		
 		/*
 		if(!enoughCapacityToBoardNextPass(time) && !floors[lift.getCurrFloor()].isUpQueueEmpty() && !floors[lift.getCurrFloor()].isDownQueueEmpty() ) {
 			Passengers skippedPassengers;
@@ -872,7 +872,7 @@ public class Building {
 	}
 	//no one in elevator, elevator stopped, no one in floors, no one in passQ
 	public boolean detectEndOfSimulation(int time) {
-		if(lift.getOnBoard().isEmpty() && passQ.isEmpty() && lift.getCurrState() == STOP) {
+		if(lift.getOnBoard().isEmpty() && passQ.isEmpty() && lift.getPrevState() == STOP) {
 
 
 

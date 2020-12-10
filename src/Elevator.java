@@ -64,7 +64,7 @@ public class Elevator {
 
 	
 	public Elevator(int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick) {		
-		this.prevState = UNDEF;
+		this.prevState = STOP;
 		this.currState = STOP;
 		this.currFloor = 0;
 		this.capacity = capacity;
