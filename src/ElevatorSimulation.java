@@ -40,7 +40,7 @@ public class ElevatorSimulation extends Application {
 	Label occ;
 	Label status;
 
-	Timeline tl = new Timeline(new KeyFrame(Duration.millis(1), e -> controller.stepSim()));
+	Timeline tl = new Timeline(new KeyFrame(Duration.millis(100), e -> controller.stepSim()));
 
 	
 	

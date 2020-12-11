@@ -571,7 +571,7 @@ public class Building {
 				currentlyBoarding = floors[lift.getCurrFloor()].peekDownQueue();
 			}
 			//if currentlyBoarding.hasGivenUp, move currentlyBoarding to the gaveUpQueue
-			if(time - currentlyBoarding.getTime() >= currentlyBoarding.getGiveUpTime())  {
+			if(time - currentlyBoarding.getTime() > currentlyBoarding.getGiveUpTime())  {
 				if(lift.getDirection() == 1) {
 					gaveUpQueue.add(floors[lift.getCurrFloor()].removeUpQueue());
 				}
