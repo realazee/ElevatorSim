@@ -33,9 +33,11 @@ public class GenericQueue<E> {
 	}
 	
 	public boolean add(E o) throws IllegalStateException {
+		
 		if(queue.size() == MAX_QUEUE_SIZE) {
 			throw new IllegalStateException();	
 		}
+		
 		return queue.add(o);
 	}
 	
