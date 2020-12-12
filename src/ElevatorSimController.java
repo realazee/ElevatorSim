@@ -27,10 +27,12 @@ public class ElevatorSimController {
 		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
 			String line;
 			br.readLine();
+			int i=0;
 			while ((line = br.readLine())!= null) {
 				String[] values = line.split(",");
-				
-				building.passQ.add(new Passengers(Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]) -1, Integer.parseInt(values[3]) -1, Boolean.parseBoolean(values[4]), Integer.parseInt(values[5])));
+				System.out.println(i);
+				i++;
+				building.addPassengers(new Passengers(Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]) -1, Integer.parseInt(values[3]) -1, Boolean.parseBoolean(values[4]), Integer.parseInt(values[5])));
 				//System.out.println(building.passQ.toString());
 				// use values to construct the passenger...
 			}
@@ -68,8 +70,25 @@ public class ElevatorSimController {
 			building.disableLogging();
 		}
 	}
+	public int getNumFloors() {
+		return building.getNumFloors();
+	}
 	
-	
+	public Floor[] getFloors(){
+		return building.getFloors();
+	}
+	public String getElevatorStatus(){
+		return building.getElevatorStatus();
+	}
+	public int getElevatorOccupance() {
+		return building.getElevatorOccupance();
+	}
+	public int getElevatorDirection() {
+		return building.getElevatorDirection();
+	}
+	public int getElevatorCurrFloor() {
+		return building.getElevatorCurrFloor();
+	}
 	
  	public void stepSim() {
 		stepCnt++;
@@ -77,11 +96,11 @@ public class ElevatorSimController {
 		
 		building.updateElevator(stepCnt);
 		//building.detectEndOfSimulation(stepCnt);
-		gui.updateGUI();
+		gui.updateGUI(stepCnt);
 		if(building.detectEndOfSimulation(stepCnt)) {
 			gui.stopTimeLine();
 		}
-//		System.out.println("Hello World");
+		System.out.println("Current Floor: " + getElevatorCurrFloor());
 		// need to check to see if passengers should show up on floors
 		// then updateElevator...
 		// and update the GUI...

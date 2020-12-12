@@ -26,10 +26,15 @@ public class Building {
 
 	private Floor[] floors;
 	private Elevator lift;
-	private GenericQueue<Passengers>gaveUpQueue = new GenericQueue<Passengers>(10000);
+	private ArrayList<Passengers>gaveUpQueue = new ArrayList<Passengers>();
 	private ArrayList<Passengers>arrivedList = new ArrayList<Passengers>();
 
-	public GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(1000000); // we need to edit the max passenger count.
+	private GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(1000); // we need to edit the max passenger count.
+	
+	public void addPassengers(Passengers p) {
+		passQ.add(p);
+	}
+	
 
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick, String filename) {
@@ -50,7 +55,7 @@ public class Building {
 		// create the floors
 		floors = new Floor[NUM_FLOORS];
 		for (int i = 0; i < NUM_FLOORS; i++) {
-			floors[i]= new Floor(100); 
+			floors[i]= new Floor(10); 
 		}
 		floors[0].setLoggerFH(fh); // only need to pass the file to one of the floors.
 		lift = new Elevator(capacity, ticksPerFloor, ticksDoorOpenClose, passPerTick);
@@ -98,6 +103,30 @@ public class Building {
 	//remove removes the first in the queue, and returns it
 	//peek returns the first in the queue but doesnt remove it.
 	//returns the next passenger to serve
+	public int getNumFloors() {
+		return floors.length;
+	}
+	public Floor[] getFloors() {
+		return floors;
+	}
+	public int getElevatorDirection() {
+		return lift.getDirection();
+	}
+
+	public void setFloors(Floor[] floors) {
+		this.floors = floors;
+	}
+	public String getElevatorStatus(){
+		return printState(lift.getCurrState());
+	}
+	public int getElevatorOccupance() {
+		return lift.getOnBoard().size();
+	}
+	public int getElevatorCurrFloor() {
+		return lift.getCurrFloor();
+	}
+
+
 	public void logElevatorConfig() {
 		LOGGER.info("CONFIG: Capacity="+lift.getCapacity()+" Ticks-Floor="
 

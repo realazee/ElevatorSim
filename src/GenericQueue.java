@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.lang.IllegalStateException;
 
 public class GenericQueue<E> {
-	private static int MAX_QUEUE_SIZE;
+	private final int MAX_QUEUE_SIZE;
 	private LinkedList<E> queue = new LinkedList<>();
 
 	public GenericQueue(int queueSize) {
