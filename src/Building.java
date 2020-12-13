@@ -30,11 +30,11 @@ public class Building {
 	private ArrayList<Passengers>arrivedList = new ArrayList<Passengers>();
 
 	private GenericQueue<Passengers> passQ = new GenericQueue<Passengers>(1000); // we need to edit the max passenger count.
-	
+
 	public void addPassengers(Passengers p) {
 		passQ.add(p);
 	}
-	
+
 
 	//mr. murray said that we do not need elevetor
 	public Building(int numFloors, int numElevators, int capacity, int ticksPerFloor, int ticksDoorOpenClose, int passPerTick, String filename) {
@@ -366,7 +366,15 @@ public class Building {
 
 	public int currStateMvToFlr(int time, Elevator lift) {
 		//state actions
+		lift.moveElevator();
+		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
+			return OPENDR;
+		}
+		else {
+			return MVTOFLR;
+		}
 
+		/*
 		lift.moveElevator();
 		System.out.println("\n\n\n\n");
 		System.out.println(lift.getCurrFloor());
@@ -379,7 +387,7 @@ public class Building {
 			return OPENDR;
 		}
 		return MVTOFLR;
-
+		 */
 		//		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
 		//			return OPENDR;
 		//		}
@@ -588,7 +596,26 @@ public class Building {
 
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-
+		boolean pplGaveUp = false;
+		
+		
+		
+		if(lift.getDirection() == 1 && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
+			lift.setDirection(-1);
+		}
+		else if(lift.getDirection() == -1 && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
+			lift.setDirection(1);
+		}
+		
+		if(floors[lift.getCurrFloor()].isDownQueueEmpty() && lift.getDirection() == -1) {
+			pplGaveUp = true;
+		}
+		else if(floors[lift.getCurrFloor()].isUpQueueEmpty() && lift.getDirection() == 1) {
+			pplGaveUp = true;
+		}
+		
+		
+		
 		// while the elevator is not full and passengers to board:
 		while(!lift.isFull() && passBoardOnCurrFloor()) {
 			//peek passenger at the head of the queue
@@ -641,7 +668,7 @@ public class Building {
 		//increment timeInState in lift
 		lift.incrementTimeInState();
 
-		if(lift.getTimeInState() == delayTime) {
+		if(lift.getTimeInState() == delayTime || pplGaveUp) {
 			return CLOSEDR;
 		}
 		else {
@@ -760,8 +787,8 @@ public class Building {
 				if(noOneWaiting()) {
 					return STOP;
 				}
-				
-				
+
+
 				if(!noCallsInSameDirection()) {
 					System.out.println("1___________________________");
 					return MV1FLR;
@@ -782,7 +809,7 @@ public class Building {
 
 			}
 			else {
-				
+
 				return MV1FLR;
 			}
 		}
@@ -908,7 +935,7 @@ public class Building {
 	}
 	//no one in elevator, elevator stopped, no one in floors, no one in passQ
 	public boolean detectEndOfSimulation(int time) {
-		if(lift.getOnBoard().isEmpty() && passQ.isEmpty() && lift.getPrevState() == STOP) {
+		if(lift.getOnBoard().isEmpty() && passQ.isEmpty() && lift.getPrevState() == STOP && allFloorsEmpty()) {
 
 
 
@@ -925,6 +952,14 @@ public class Building {
 
 
 
+	}
+	public boolean allFloorsEmpty() {
+		for(int i = 0; i < floors.length; i++) {
+			if(!floors[i].isDownQueueEmpty() || !floors[i].isUpQueueEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	/*
 	public void detectEndOfSimulation(int time) {
