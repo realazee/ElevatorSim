@@ -993,7 +993,7 @@ public void processPassengerData(String passDataFile) {
 			}
 			for (Passengers p : gaveUpQueue) {
 				String str = p.getId()+","+p.getNumber()+","+p.getFromFloor()+","+p.getToFloor()+","+
-				             (p.getTimeArrived() - p.getTime())+",-1";
+				             (p.getGiveUpTime() - p.getTime())+",-1";
 				out.println(str);
 			}
 			out.flush();
