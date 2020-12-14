@@ -1,4 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -68,6 +71,13 @@ public class Building {
 		}
 		return true;
 	}
+	
+	private boolean elevatorFloorChanged(Elevator lift) {
+		if(lift.getPrevFloor() == lift.getCurrFloor()) {
+			return false;
+		}
+		return true;
+	}
 	private String printState(int liftState) {
 		switch(liftState) {
 		case STOP: return "STOP";
@@ -83,7 +93,7 @@ public class Building {
 	public void updateElevator(int time) {
 		System.out.println("Current state: " + lift.getCurrState());
 
-		if (elevatorStateChanged(lift)) 
+		if (elevatorStateChanged(lift) || elevatorFloorChanged(lift)) 
 			LOGGER.info("Time="+time+"   Prev State: " + printState(lift.getPrevState()) + "   Curr State: "+printState(lift.getCurrState())
 			+"   PrevFloor: "+(lift.getPrevFloor()+1) + "   CurrFloor: " + (lift.getCurrFloor()+1));
 
@@ -367,6 +377,9 @@ public class Building {
 	public int currStateMvToFlr(int time, Elevator lift) {
 		//state actions
 		lift.moveElevator();
+		if(!noCallsInSameDirection()) {
+			return MV1FLR;
+		}
 		if(lift.getCurrFloor() == lift.getMoveToFloor()) {
 			return OPENDR;
 		}
@@ -395,6 +408,7 @@ public class Building {
 		//			return MVTOFLR;
 		//		}
 	}
+	
 
 
 	public int currStateOpenDr(int time, Elevator lift) {
@@ -534,8 +548,8 @@ public class Building {
 	public void offLoadAllPassengers(int time) {
 		for(int i = 0; i < lift.getOnBoard().size(); i++) {
 			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
-				//LOGGER.info("Time="+time+" Arrived="+onBoard.get(i).getNumber()+" Floor="+ (currFloor+1)
-				//	+" passID=" + onBoard.get(i).getId());
+				LOGGER.info("Time="+time+" Arrived="+lift.getOnBoard().get(i).getNumber()+" Floor="+ (lift.getCurrFloor()+1)
+					+" passID=" + lift.getOnBoard().get(i).getId());
 				lift.getOnBoard().get(i).setTimeArrived(time);
 				arrivedList.add(lift.getOnBoard().remove(i));
 				i--;
@@ -550,11 +564,11 @@ public class Building {
 	//	}
 	//	
 
-	//TO BE FIXED: it will always
+	
 	public boolean noCallsInSameDirection() {
 		int currentFloor = lift.getCurrFloor();
 		if(lift.getDirection() == 1) {
-			for(int i = currentFloor; i < floors.length; i++) {
+			for(int i = currentFloor +1; i < floors.length; i++) {
 				if(!floors[i].isUpQueueEmpty()) {
 					return false;
 				}
@@ -562,7 +576,7 @@ public class Building {
 		}
 
 		if(lift.getDirection() == -1) {
-			for(int i = currentFloor; i > 0; i--) {
+			for(int i = currentFloor - 1; i >= 0; i--) {
 				if(!floors[i].isDownQueueEmpty()) {
 					return false;
 				}
@@ -596,10 +610,10 @@ public class Building {
 
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-		boolean pplGaveUp = false;
 		
 		
 		
+		/*
 		if(lift.getDirection() == 1 && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
 			lift.setDirection(-1);
 		}
@@ -613,6 +627,7 @@ public class Building {
 		else if(floors[lift.getCurrFloor()].isUpQueueEmpty() && lift.getDirection() == 1) {
 			pplGaveUp = true;
 		}
+		*/
 		
 		
 		
@@ -637,6 +652,8 @@ public class Building {
 			}
 			//else if there is not enough room to board the passenger, break;
 			else if(lift.getRemainingCapacity() < currentlyBoarding.getNumber()) {
+				LOGGER.info("Time="+time+" Skip="+currentlyBoarding.getNumber()+" Floor="+ (lift.getCurrFloor()+1)
+						+" Dir="+((currentlyBoarding.isGoingUp())?"Up":"Down")+" passID=" + currentlyBoarding.getId());
 				break;
 			}
 			else {
@@ -668,7 +685,7 @@ public class Building {
 		//increment timeInState in lift
 		lift.incrementTimeInState();
 
-		if(lift.getTimeInState() == delayTime || pplGaveUp) {
+		if(lift.getTimeInState() >= delayTime) {
 			return CLOSEDR;
 		}
 		else {
@@ -961,6 +978,35 @@ public class Building {
 		}
 		return true;
 	}
+	
+	
+	
+public void processPassengerData(String passDataFile) {
+		
+		try {
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(passDataFile)));
+			out.println("ID,Number,From,To,WaitToBoard,TotalTime");
+			for (Passengers p : arrivedList) {
+				String str = p.getId()+","+p.getNumber()+","+p.getFromFloor()+","+p.getToFloor()+","+
+				             (p.getBoardTime() - p.getTime())+","+(p.getTimeArrived() - p.getTime());
+				out.println(str);
+			}
+			for (Passengers p : gaveUpQueue) {
+				String str = p.getId()+","+p.getNumber()+","+p.getFromFloor()+","+p.getToFloor()+","+
+				             (p.getTimeArrived() - p.getTime())+",-1";
+				out.println(str);
+			}
+			out.flush();
+			out.close();
+			
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+
 	/*
 	public void detectEndOfSimulation(int time) {
 

@@ -99,6 +99,7 @@ public class ElevatorSimController {
 		gui.updateGUI(stepCnt);
 		if(building.detectEndOfSimulation(stepCnt)) {
 			gui.stopTimeLine();
+			building.processPassengerData("passengerData" + configValues[2]);
 		}
 		System.out.println("Current Floor: " + getElevatorCurrFloor());
 		// need to check to see if passengers should show up on floors

@@ -50,7 +50,7 @@ public class ElevatorSimulation extends Application {
 	private ArrayList<Label> downflrQLbls = new ArrayList<Label>();
 	
 	
-	Timeline tl = new Timeline(new KeyFrame(Duration.millis(100), e -> controller.stepSim()));
+	Timeline tl = new Timeline(new KeyFrame(Duration.millis(1), e -> controller.stepSim()));
 	
 	private static Polygon MV_UP_SYMBOL = new Polygon(0,20,12,0,24,20);
 	private static Polygon MV_DOWN_SYMBOL = new Polygon(0,0,12,20,24,0);
