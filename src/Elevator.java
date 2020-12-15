@@ -247,14 +247,7 @@ public class Elevator {
 		if ((timeInState % ticksPerFloor) == 0) {
 		currFloor = currFloor + direction;
 		}
-		/*timeInState++;
-		prevFloor = currFloor;
-		if((timeInState % ticksPerFloor) == 0) {
-			currFloor += direction;
-			System.out.println("Current Floor: " + currFloor);
-			
-		}
-		*/
+		
 		
 	}
 	
