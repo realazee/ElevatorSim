@@ -442,7 +442,7 @@ public class Building {
 		int currentFloor = lift.getCurrFloor();
 		if(lift.getDirection() == 1) {
 			for(int i = currentFloor +1; i < floors.length; i++) {
-				if(!floors[i].isUpQueueEmpty()) {
+				if(!floors[i].isUpQueueEmpty() || !floors[i].isDownQueueEmpty()) {
 					return false;
 				}
 			}
@@ -450,7 +450,7 @@ public class Building {
 
 		if(lift.getDirection() == -1) {
 			for(int i = currentFloor - 1; i >= 0; i--) {
-				if(!floors[i].isDownQueueEmpty()) {
+				if(!floors[i].isDownQueueEmpty() || !floors[i].isUpQueueEmpty()) {
 					return false;
 				}
 			}
@@ -472,7 +472,7 @@ public class Building {
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
 				
-		
+	
 		// while the elevator is not full and passengers to board:
 		while(!lift.isFull() && passBoardOnCurrFloor()) {
 			//peek passenger at the head of the queue
@@ -483,8 +483,10 @@ public class Building {
 			else {
 				currentlyBoarding = floors[lift.getCurrFloor()].peekDownQueue();
 			}
+			
 			//if currentlyBoarding.hasGivenUp, move currentlyBoarding to the gaveUpQueue
-			if(time - currentlyBoarding.getTime() > currentlyBoarding.getGiveUpTime())  {
+			if(time - currentlyBoarding.getTime() >= currentlyBoarding.getGiveUpTime())  {
+				
 				if(lift.getDirection() == 1) {
 					gaveUpQueue.add(floors[lift.getCurrFloor()].removeUpQueue());
 				}
@@ -672,22 +674,26 @@ public class Building {
 
 		if(floorBeforeMoving != lift.getCurrFloor()) {
 			if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
-
+				System.out.println("____________ENTEREEDDDDD 1___________________");
 				if(lift.getDirection() == 1) {
+					System.out.println("_________________ENTEREDDD 2______________");
 					lift.setDirection(-1);
 					return OPENDR;
 				}
 				else if(lift.getDirection() == -1) {
+					System.out.println("________________ENTEREDDDD 3_______________");
 					lift.setDirection(1);
 					return OPENDR;
 				}
 			}
 
 			if(passengersGetOffAtCurrFloor()) {
+				System.out.println("__________________ENTEREDDD 4_____________");
 
 				return OPENDR;
 			}
 			if(passBoardInSameDir()) {
+				System.out.println("________________ENTEREDDDD 5_______________");
 
 				return OPENDR;
 			}
@@ -776,13 +782,13 @@ public void processPassengerData(String passDataFile) {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(passDataFile)));
 			out.println("ID,Number,From,To,WaitToBoard,TotalTime");
 			for (Passengers p : arrivedList) {
-				String str = p.getId()+","+p.getNumber()+","+p.getFromFloor()+","+p.getToFloor()+","+
+				String str = p.getId()+","+p.getNumber()+","+(p.getFromFloor() + 1)+","+(p.getToFloor() + 1)+","+
 				             (p.getBoardTime() - p.getTime())+","+(p.getTimeArrived() - p.getTime());
 				out.println(str);
 			}
 			for (Passengers p : gaveUpQueue) {
-				String str = p.getId()+","+p.getNumber()+","+p.getFromFloor()+","+p.getToFloor()+","+
-				             (p.getGiveUpTime() - p.getTime())+",-1";
+				String str = p.getId()+","+p.getNumber()+","+(p.getFromFloor()+ 1) +","+(p.getToFloor() + 1) +","+
+				             (p.getGiveUpTime())+",-1";
 				out.println(str);
 			}
 			out.flush();

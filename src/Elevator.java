@@ -317,8 +317,15 @@ public class Elevator {
 		}
 		return false;
 	}
+	public int getPassengerCount() {
+		int passCount = 0;
+		for(int i = 0; i < getOnBoard().size(); i++) {
+			passCount += getOnBoard().get(i).getNumber();
+		}
+		return passCount;
+	}
 	public int getRemainingCapacity() {
-		return capacity - getOnBoard().size();
+		return capacity - getPassengerCount();
 	}
 	
 //	public boolean isCallsInSameDir() {
