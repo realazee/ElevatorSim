@@ -1,4 +1,4 @@
-
+//By Aaron Zheng, Mihir Mirchandani
 public class Passengers {
 	private static int ID=0;
 	// These will come from the csv file, and should be initialized in the 

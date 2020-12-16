@@ -1,4 +1,4 @@
-//Authors: Mihir Mirchandani and Alex Zheng
+//Authors: Mihir Mirchandani and Aaron Zheng
 
 import java.util.ArrayList;
 import java.util.logging.FileHandler;

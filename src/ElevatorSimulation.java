@@ -25,7 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+//By Aaron Zheng, Mihir Mirchandani
 public class ElevatorSimulation extends Application {
 	private ElevatorSimController controller;
 	//private int currFloor;
@@ -50,7 +50,7 @@ public class ElevatorSimulation extends Application {
 	private ArrayList<Label> downflrQLbls = new ArrayList<Label>();
 	
 	
-	Timeline tl = new Timeline(new KeyFrame(Duration.millis(1), e -> controller.stepSim()));
+	Timeline tl = new Timeline(new KeyFrame(Duration.millis(100), e -> controller.stepSim()));
 	
 	private static Polygon MV_UP_SYMBOL = new Polygon(0,20,12,0,24,20);
 	private static Polygon MV_DOWN_SYMBOL = new Polygon(0,0,12,20,24,0);

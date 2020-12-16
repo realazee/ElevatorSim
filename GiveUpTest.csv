@@ -7,4 +7,4 @@ Time,NumPass,FromFloor,To Floor,Polite,Wait,
 60,2,3,1,TRUE,1000,These should board
 110,14,1,6,TRUE,1000,get on
 110,2,2,3,TRUE,17,Blocks next group before giving up
-110,1,2,6,TRUE,1000,
+110,1,2,6,TRUE,1000,This is PassID 8 with config 1

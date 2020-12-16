@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.lang.Math.*;
-
+//By Aaron Zheng, Mihir Mirchandani
 public class Building {
 	private final static Logger LOGGER = Logger.getLogger(Building.class.getName());
 	private FileHandler fh;
@@ -71,7 +71,7 @@ public class Building {
 		}
 		return true;
 	}
-	
+
 	private boolean elevatorFloorChanged(Elevator lift) {
 		if(lift.getPrevFloor() == lift.getCurrFloor()) {
 			return false;
@@ -90,6 +90,8 @@ public class Building {
 		default: return "";
 		}
 	}
+
+	//all methods programmed jointly by Aaron Zheng and Mihir Mirchandani
 	public void updateElevator(int time) {
 		System.out.println("Current state: " + lift.getCurrState());
 
@@ -184,7 +186,7 @@ public class Building {
 	}
 
 
-
+	//returns the lowest passenger going up
 	private Passengers lowestPassengerGoingUp() {
 		int lowestFloorSoFar = floors.length;
 		for(int i = floors.length - 1; i >= 0; i--) {
@@ -198,6 +200,7 @@ public class Building {
 		return floors[lowestFloorSoFar].peekUpQueue();
 
 	}
+	//returns the highest passenger going down
 	private Passengers highestPassengerGoingDown() {
 		int highestFloorSoFar = 0;
 		for(int i = 0; i < floors.length; i++) {
@@ -211,7 +214,7 @@ public class Building {
 		return floors[highestFloorSoFar].peekDownQueue();
 	}
 
-
+	//returns the number of up calls in the entire building
 	private int numUpCalls() {
 		int c = 0;
 		for(int i = 0; i < floors.length; i++) {
@@ -221,6 +224,7 @@ public class Building {
 		}
 		return c;
 	}
+	//returns the number of down calls in the entire building
 	private int numDownCalls() {
 		int c = 0;
 		for(int i = 0; i < floors.length; i++) {
@@ -230,7 +234,7 @@ public class Building {
 		}
 		return c;
 	}
-
+	//adds passengers from the passenger queue to the floor queue when time is correct.
 	public void checkPassengerQueue(int globalTime) {
 		/* Passengers P = passQ.peek()
 		 * while(p.getTime() == globalTime) {
@@ -329,7 +333,7 @@ public class Building {
 			lift.setMoveToFloor(prioritizeCalls().getFromFloor());
 		}
 	}
-
+	//sets next elevator direction
 	private void setNextElevatorDirection() {
 
 		if(lift.getMoveToFloor() > lift.getCurrFloor()) {
@@ -354,7 +358,7 @@ public class Building {
 
 
 	}
-	
+
 
 
 	public int currStateOpenDr(int time, Elevator lift) {
@@ -370,6 +374,7 @@ public class Building {
 		}
 		return OPENDR;
 	}
+	//returns whether passengers get off at the current floor
 	public boolean passengersGetOffAtCurrFloor() {
 		for(int i = 0; i < lift.getOnBoard().size(); i++) {
 			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
@@ -424,20 +429,21 @@ public class Building {
 
 
 	}
+	//offloads all passengers that get off at the current floor
 	public void offLoadAllPassengers(int time) {
 		for(int i = 0; i < lift.getOnBoard().size(); i++) {
 			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
 				LOGGER.info("Time="+time+" Arrived="+lift.getOnBoard().get(i).getNumber()+" Floor="+ (lift.getCurrFloor()+1)
-					+" passID=" + lift.getOnBoard().get(i).getId());
+						+" passID=" + lift.getOnBoard().get(i).getId());
 				lift.getOnBoard().get(i).setTimeArrived(time);
 				arrivedList.add(lift.getOnBoard().remove(i));
 				i--;
 			}
 		}
 	}
-	
 
-	
+
+	//checks if there are no calls in the same direction the elevator is traveling
 	public boolean noCallsInSameDirection() {
 		int currentFloor = lift.getCurrFloor();
 		if(lift.getDirection() == 1) {
@@ -457,8 +463,10 @@ public class Building {
 		}
 		return true;
 
-		
+
 	}
+
+	//checks if there is a call going the opposite direction from the elevator on the current floor
 	public boolean isCallInOppositeDirectionOnCurrFloor() {
 		if(lift.getDirection() == 1 && !floors[lift.getCurrFloor()].isDownQueueEmpty()) {
 			return true;
@@ -471,8 +479,8 @@ public class Building {
 
 	int amountOfTimeToBoard;
 	public int currStateBoard(int time, Elevator lift) {
-				
-	
+
+
 		// while the elevator is not full and passengers to board:
 		while(!lift.isFull() && passBoardOnCurrFloor()) {
 			//peek passenger at the head of the queue
@@ -483,15 +491,17 @@ public class Building {
 			else {
 				currentlyBoarding = floors[lift.getCurrFloor()].peekDownQueue();
 			}
-			
+
 			//if currentlyBoarding.hasGivenUp, move currentlyBoarding to the gaveUpQueue
-			if(time - currentlyBoarding.getTime() >= currentlyBoarding.getGiveUpTime())  {
-				
+			if(time - currentlyBoarding.getTime() > currentlyBoarding.getGiveUpTime())  {
+
 				if(lift.getDirection() == 1) {
 					gaveUpQueue.add(floors[lift.getCurrFloor()].removeUpQueue());
+
 				}
 				else {
 					gaveUpQueue.add(floors[lift.getCurrFloor()].removeDownQueue());
+
 				}
 			}
 			//else if there is not enough room to board the passenger, break;
@@ -538,9 +548,9 @@ public class Building {
 
 
 
-		
-	}
 
+	}
+	//returns if there are passengers to board on the current floor
 	public boolean passBoardOnCurrFloor() {
 		if(!floors[lift.getCurrFloor()].isUpQueueEmpty() && lift.getDirection() == 1|| !floors[lift.getCurrFloor()].isDownQueueEmpty() && lift.getDirection() == -1) {
 			return true;
@@ -549,7 +559,7 @@ public class Building {
 		return false;
 	}
 
-
+	//returns whether there is enough capacity to board the next passenger
 	public boolean enoughCapacityToBoardNextPass(int time) {
 
 
@@ -561,12 +571,11 @@ public class Building {
 			return true;
 		}
 		else {
-			//LOGGING PART
 
-			//END LOGGING PART
 			return false;
 		}
 	}
+	//returns the amount of time in ticks to board the first passenger on the current floor in the current direction of the elevator
 	public int amountOfTimeToBoardFirstPassOnCurrFloorInCurrDir() {
 
 		if(lift.getDirection() == 1) {
@@ -601,7 +610,7 @@ public class Building {
 	public int currStateCloseDr(int time, Elevator lift) {
 		numBoarded = 0;
 		lift.closeDoor();
-		
+
 		//politeness
 		if(lift.getDirection() == 1) {
 			if(!(floors[lift.getCurrFloor()].peekUpQueue() == null) && !floors[lift.getCurrFloor()].peekUpQueue().isPolite()) {
@@ -628,19 +637,19 @@ public class Building {
 
 
 				if(!noCallsInSameDirection()) {
-					System.out.println("1___________________________");
+
 					return MV1FLR;
 				}
 
 				else {
 					if(lift.getDirection() == 1) {
 						lift.setDirection(-1);
-						System.out.println("2___________________________");
+
 						return MV1FLR;
 					}
 					else if(lift.getDirection() == -1) {
 						lift.setDirection(1);
-						System.out.println("3___________________________");
+
 						return MV1FLR;
 					}
 				}
@@ -653,7 +662,7 @@ public class Building {
 		}
 		return CLOSEDR;
 
-	
+
 
 	}
 
@@ -674,26 +683,24 @@ public class Building {
 
 		if(floorBeforeMoving != lift.getCurrFloor()) {
 			if(lift.getOnBoard().isEmpty() && noCallsInSameDirection() && isCallInOppositeDirectionOnCurrFloor()) {
-				System.out.println("____________ENTEREEDDDDD 1___________________");
+
 				if(lift.getDirection() == 1) {
-					System.out.println("_________________ENTEREDDD 2______________");
+
 					lift.setDirection(-1);
 					return OPENDR;
 				}
 				else if(lift.getDirection() == -1) {
-					System.out.println("________________ENTEREDDDD 3_______________");
+
 					lift.setDirection(1);
 					return OPENDR;
 				}
 			}
 
-			if(passengersGetOffAtCurrFloor()) {
-				System.out.println("__________________ENTEREDDD 4_____________");
+			if(passengersGetOffAtCurrFloor()) {				
 
 				return OPENDR;
 			}
 			if(passBoardInSameDir()) {
-				System.out.println("________________ENTEREDDDD 5_______________");
 
 				return OPENDR;
 			}
@@ -710,9 +717,9 @@ public class Building {
 
 
 
-	
-	}
 
+	}
+	//checks if passengers board on the current floor in the same direction as the elevator
 	public boolean passBoardInSameDir() {
 		if(lift.getDirection() == 1 && isUpCallFromCurrFloor()) {
 			return true;
@@ -733,7 +740,7 @@ public class Building {
 		// need to pass this along to both the elevator and floor classes...
 		LOGGER.setLevel(Level.OFF);
 	}
-
+	//logs all passengers that arrive at a floor
 	public void logArrived(int time) {
 		for(int i = 0; i < lift.getOnBoard().size(); i++) {
 			if(lift.getOnBoard().get(i).getToFloor() == lift.getCurrFloor()) {
@@ -773,35 +780,35 @@ public class Building {
 		}
 		return true;
 	}
-	
-	
-	
-public void processPassengerData(String passDataFile) {
-		
+
+
+	//generates CSV file with passenger data post simulation for analysiss
+	public void processPassengerData(String passDataFile) {
+
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(passDataFile)));
 			out.println("ID,Number,From,To,WaitToBoard,TotalTime");
 			for (Passengers p : arrivedList) {
 				String str = p.getId()+","+p.getNumber()+","+(p.getFromFloor() + 1)+","+(p.getToFloor() + 1)+","+
-				             (p.getBoardTime() - p.getTime())+","+(p.getTimeArrived() - p.getTime());
+						(p.getBoardTime() - p.getTime())+","+(p.getTimeArrived() - p.getTime());
 				out.println(str);
 			}
 			for (Passengers p : gaveUpQueue) {
 				String str = p.getId()+","+p.getNumber()+","+(p.getFromFloor()+ 1) +","+(p.getToFloor() + 1) +","+
-				             (p.getGiveUpTime())+",-1";
+						(p.getGiveUpTime())+",-1";
 				out.println(str);
 			}
 			out.flush();
 			out.close();
-			
+
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
-	
+
 
 }

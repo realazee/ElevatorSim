@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import javafx.scene.control.Label;
-
+//By Aaron Zheng, Mihir Mirchandani
 public class ElevatorSimController {
 	private ElevatorSimulation gui;
 	private Building building;
