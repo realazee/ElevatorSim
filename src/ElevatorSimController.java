@@ -17,7 +17,7 @@ public class ElevatorSimController {
 		
 	public ElevatorSimController(ElevatorSimulation gui) {
 		this.gui = gui;
-		InitializeElevatorConfig("ElevatorSimConfig.csv");
+		InitializeElevatorConfig("ElevatorSimConfig3.csv");
 		building = new Building(Integer.parseInt(configValues[0]),Integer.parseInt(configValues[1]),Integer.parseInt(configValues[3]), Integer.parseInt(configValues[4]),Integer.parseInt(configValues[5]),Integer.parseInt(configValues[6]),configValues[2] );
 		InitializePassengerData(configValues[2]);
 
